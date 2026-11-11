@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Schedule Prompt Maker · The Learning Mama</title>
+<meta name="description" content="A tool from The Learning Mama: answer a few questions and get a ready-to-paste AI prompt that builds your kids' weekly schedule as a downloadable PDF.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1E3B24; --hero:#2E76C2; --nav:#1B4F8F; --cream:#F7F3EC; --brown:#4A2218; --blue:#3E8FD8; --blue-d:#2B6DB0; --blue-soft:#C9DFF2;
+  --yellow:#F6C94C; --yellow-soft:#FBEBB5; --pink:#E79BD9; --orange:#EE7F4B; --orange-soft:#FADCC8; --grey:#E8E3DB;
+  --bg:var(--cream); --bg2:#F0EBE2; --card:#FFFDF9; --ink:var(--brown); --muted:#7A6A62; --line:#E3DCD0;
+  --accent:var(--blue); --accent-ink:#fff; --accent-soft:var(--blue-soft);
+  --k1:var(--orange); --k2:var(--blue); --k3:#E5B52E;
+  --radius:22px; --shadow:0 2px 0 rgba(74,34,24,.04),0 10px 28px rgba(74,34,24,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:"Poppins","DM Sans",sans-serif;font-weight:700;line-height:1.15;margin:0;letter-spacing:-.015em}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+section{padding:60px 0}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brown);background:var(--blue-soft);padding:6px 14px;border-radius:99px}
+.hl{color:var(--blue)}
+.serif{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600}
+
+/* squiggles */
+.sq{position:absolute;pointer-events:none;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sq path{stroke-width:15}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);color:var(--cream)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{text-decoration:none;font-size:18px;display:flex;align-items:baseline;gap:5px;color:var(--cream)}
+.brand .serif{color:#fff;font-size:20px}
+.brand b{font-family:"Poppins",sans-serif;font-weight:700;letter-spacing:.01em;color:var(--yellow)}
+.nav-links{display:flex;gap:18px;align-items:center;font-size:14px}
+.nav-links a{text-decoration:none;color:#E3EEF9}
+.nav-links a:hover{color:#fff}
+.nav-links a.cta{background:var(--yellow);color:var(--green);font-weight:700;padding:8px 16px;border-radius:99px}
+@media(max-width:560px){.nav-links a.hide-sm{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:var(--hero);color:#fff;padding:64px 0 90px}
+.hero .wrap{position:relative;z-index:2}
+.hero .eyebrow{background:rgba(255,255,255,.12);color:var(--cream)}
+.hero h1{font-size:clamp(34px,7vw,56px);margin:20px 0 16px;color:var(--yellow)}
+.hero h1 em{font-style:normal;color:#fff}
+.hero p.lead{font-size:18px;color:#EAF3FC;max-width:560px;margin:0 0 28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border:0;border-radius:99px;padding:14px 26px;cursor:pointer;text-decoration:none;transition:transform .08s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-yellow{background:var(--yellow);color:var(--green)}
+.btn-ghost{background:transparent;color:inherit;border:2px solid currentColor}
+.card .btn-ghost,.form-shell .btn-ghost{color:var(--brown);border-color:var(--line);background:#fff}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.tab:focus-visible,.add-btn:focus-visible,.link-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;box-shadow:0 0 0 5px var(--hero)}
+.form-shell input:focus-visible,.form-shell select:focus-visible,.form-shell textarea:focus-visible,.form-shell .chip:focus-visible,.card .btn:focus-visible,.tab:focus-visible{outline-color:var(--blue);box-shadow:none}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.pill{font-size:13px;font-weight:500;color:var(--green);background:var(--cream);padding:6px 14px;border-radius:99px}
+.pill:nth-child(2){background:var(--blue-soft)} .pill:nth-child(3){background:var(--yellow-soft)} .pill:nth-child(4){background:var(--pink)}
+
+/* how */
+#how{position:relative;overflow:hidden}
+.section-title{font-size:clamp(26px,4.5vw,38px);margin-bottom:10px}
+.section-sub{color:var(--muted);margin:0 0 28px;max-width:580px}
+.steps{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.step{border-radius:var(--radius);padding:22px;color:var(--brown)}
+.step:nth-child(1){background:var(--blue-soft)} .step:nth-child(2){background:var(--yellow-soft)} .step:nth-child(3){background:var(--orange-soft)}
+.step .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--brown);color:var(--cream);margin-bottom:12px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{margin:0;font-size:15px}
+
+/* preview */
+.preview{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);position:relative;z-index:1}
+.preview-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+.preview-head strong{font-family:"Poppins",sans-serif;font-size:16px}
+.preview-head span{font-size:12px;color:var(--muted)}
+.mini{display:grid;grid-template-columns:44px repeat(5,1fr);gap:4px;font-size:11px}
+.mini div{border-radius:999px;padding:4px 8px;min-height:26px}
+.mini .h{background:var(--grey);text-align:center;font-weight:700;color:var(--brown)}
+.mini .t{color:var(--muted);text-align:right;padding-right:4px;background:none}
+.mini .a{background:var(--orange-soft);color:#A8501F;font-weight:500}
+.mini .b{background:var(--blue-soft);color:var(--blue-d);font-weight:500}
+.mini .c{background:var(--yellow-soft);color:#85650A;font-weight:500}
+.mini .x{background:transparent}
+.mini .s{background:var(--grey);color:var(--muted);grid-column:2/7;text-align:center}
+.mini .ra{grid-row:span 2;border-radius:14px}
+
+/* form */
+.form-shell{background:var(--bg2);position:relative;overflow:hidden}
+.form-shell .wrap{position:relative;z-index:2}
+.part{margin-top:32px}
+.part-label{display:inline-block;font-size:13px;font-weight:700;color:var(--brown);background:var(--blue-soft);padding:7px 16px;border-radius:99px;margin:0 0 14px}
+.part:nth-of-type(2) .part-label{background:var(--yellow-soft)}
+.part:nth-of-type(3) .part-label{background:var(--pink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.kid{border-top:6px solid var(--kc,var(--blue));margin-bottom:16px}
+.kid[data-k="1"]{--kc:var(--k1)} .kid[data-k="2"]{--kc:var(--k2)} .kid[data-k="3"]{--kc:var(--k3)}
+.kid-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+.kid-head h3{font-size:20px;display:flex;align-items:center;gap:10px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--kc)}
+.grid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.grid .full{grid-column:1/-1}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+label.f{display:block;font-size:14px;font-weight:700}
+label.f small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:1px}
+input[type=text],input[type=time],input[type=date],input[type=number],select,textarea{width:100%;font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;margin-top:6px;min-height:46px}
+textarea{resize:vertical;min-height:84px}
+input::placeholder,textarea::placeholder{color:#B3A79F}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font:inherit;font-size:14px;font-weight:500;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:6px 14px;cursor:pointer;min-height:38px}
+.chip[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chips.days .chip{padding:6px 10px;min-width:48px;text-align:center}
+.sub-h{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;margin:24px 0 4px}
+.hint{font-size:13px;color:var(--muted);margin:0 0 10px}
+.act{background:var(--bg);border:1.5px dashed #D6CCBD;border-radius:18px;padding:14px;margin-bottom:10px}
+.act .row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:560px){.act .row{grid-template-columns:1fr 1fr}.act .row .name{grid-column:1/-1}}
+.act .foot{display:flex;gap:10px;align-items:flex-end;margin-top:10px}
+.act .foot label{flex:1}
+.link-btn{background:none;border:0;font:inherit;font-size:14px;color:var(--muted);cursor:pointer;text-decoration:underline;padding:8px 4px;min-height:36px}
+.link-btn.danger:hover{color:#B0361E}
+.add-btn{font:inherit;font-weight:700;font-size:14px;color:var(--brown);background:var(--yellow-soft);border:0;border-radius:99px;padding:10px 18px;cursor:pointer;min-height:44px}
+.upload{margin-top:6px;border:1.5px dashed #D6CCBD;border-radius:18px;padding:14px;background:var(--bg)}
+.upload input[type=file]{font:inherit;font-size:14px;max-width:100%}
+.upload p{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.add-kid{width:100%;border:2px dashed #CDBFAE;background:transparent;color:var(--brown);font:inherit;font-weight:700;border-radius:var(--radius);padding:16px;cursor:pointer;min-height:58px}
+.add-kid:hover{border-color:var(--blue);color:var(--blue-d);background:#fff}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--blue);flex:none}
+.gen-row{margin-top:32px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.err{color:#B0361E;font-weight:700;font-size:14px;min-height:20px}
+.privacy{font-size:13px;color:var(--muted)}
+
+/* output */
+#output{display:none;background:var(--cream);position:relative;overflow:hidden}
+#output.show{display:block}
+#output .wrap{position:relative;z-index:2}
+.out-card{border:3px solid var(--blue)}
+.out-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+textarea#promptOut{min-height:340px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:1.5;background:var(--bg)}
+.tabs{display:flex;gap:6px;margin:22px 0 10px}
+.tab{font:inherit;font-weight:700;font-size:14px;border:0;background:var(--grey);color:var(--brown);padding:9px 18px;border-radius:99px;cursor:pointer;min-height:40px}
+.tab[aria-selected="true"]{background:var(--blue-soft)}
+.tabpanel ol{padding-left:20px;margin:0}
+.tabpanel li{margin-bottom:8px}
+.note{background:var(--yellow-soft);border-radius:18px;padding:14px 16px;font-size:14px;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--hero);color:#fff;padding:12px 22px;border-radius:99px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{background:var(--hero);padding:36px 0 46px;color:#EAF3FC;font-size:14px;text-align:center}
+footer strong{color:var(--yellow)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html">The <span class="serif">Learning</span> <b>MAMA</b></a>
+    <nav class="nav-links">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#preview">What you get</a>
+      <a class="cta" href="#setup">Make my prompt</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <svg class="sq" style="right:-30px;bottom:-20px;width:300px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#1E3B24" transform="rotate(-8 100 65)"/></svg>
+  <svg class="sq" style="right:90px;top:-30px;width:200px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#E79BD9" transform="rotate(20 100 65)"/></svg>
+  <svg class="sq" style="left:-50px;bottom:-30px;width:240px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#EE7F4B" transform="rotate(5 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">Tool for parents</span>
+    <h1>Your kids' weekly routine<br><em>in minutes.</em></h1>
+    <p class="lead">Tell us about each child's school, enrichment classes and your family's rhythm. Get a ready-to-paste prompt that makes ChatGPT or Claude build a simple, colour-coded weekly timetable you can download as a PDF.</p>
+    <div class="hero-actions">
+      <a class="btn btn-yellow" href="#setup">Make my prompt →</a>
+      <a class="btn btn-ghost" href="#how">How it works</a>
+    </div>
+    <div class="pills">
+      <span class="pill">Up to 3 children</span>
+      <span class="pill">Type it in or upload a timetable</span>
+      <span class="pill">PDF-ready</span>
+      <span class="pill">Nothing leaves your device</span>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <svg class="sq" style="right:-60px;top:10px;width:220px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F6E08A" transform="rotate(10 100 65)"/></svg>
+  <div class="wrap">
+    <h2 class="section-title">Three steps. <span class="hl">No coding.</span></h2>
+    <p class="section-sub">Works with your ChatGPT or Claude account.</p>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Answer the questions</h3><p>Add each child, their school hours and enrichment classes, or upload an existing timetable. Then tell us how your family likes to run the week.</p></div>
+      <div class="step"><div class="num">2</div><h3>Copy your prompt</h3><p>We turn your answers into one clear, detailed prompt. It runs in your browser, so your details are never sent anywhere.</p></div>
+      <div class="step"><div class="num">3</div><h3>Paste, then download</h3><p>Paste it into ChatGPT or Claude (attach your timetable files if you have them) and ask for the PDF. Print it for the fridge!</p></div>
+    </div>
+
+    <div class="preview" id="preview" aria-label="Example of the timetable you will get">
+      <div class="preview-head"><strong>What your PDF will look like</strong><span>Example only · simple blocks, no dates</span></div>
+      <div class="mini" role="img" aria-label="Sample simple weekly timetable">
+        <div class="h"></div><div class="h">Mon</div><div class="h">Tue</div><div class="h">Wed</div><div class="h">Thu</div><div class="h">Fri</div>
+        <div class="t">8am</div><div class="s">School</div>
+        <div class="t">3pm</div><div class="b">Reading</div><div class="a ra">Piano</div><div class="b">Homework</div><div class="x"></div><div class="c">Free play</div>
+        <div class="t">4pm</div><div class="c">Outdoor</div><div class="a">Swim</div><div class="c">Art</div><div class="b">Maths fun</div>
+        <div class="t">6pm</div><div class="s">Dinner · wind-down · bedtime routine</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="form-shell" id="setup">
+  <svg class="sq" style="left:-70px;top:30px;width:230px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#BFD9F0" transform="rotate(-15 100 65)"/></svg>
+  <svg class="sq" style="right:-60px;bottom:40px;width:220px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F5CFEA" transform="rotate(15 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">Set it up</span>
+    <h2 class="section-title" style="margin-top:14px">Tell us about <span class="hl">your week.</span></h2>
+    <p class="section-sub">Takes about 5 minutes. Skip anything that doesn't apply. The AI will make sensible assumptions and list them for you.</p>
+
+    <form id="form" novalidate>
+      <div class="part">
+        <p class="part-label">Part 1 · Your children (up to 3)</p>
+        <div id="kids"></div>
+        <button type="button" class="add-kid" id="addKid">+ Add another child</button>
+      </div>
+
+      <div class="part">
+        <p class="part-label">Part 2 · Your family's week</p>
+        <div class="card">
+          <div class="grid">
+            <label class="f full">Language of the timetable
+              <input type="text" id="lang" value="English"></label>
+
+            <label class="f">Homework / study / reading time<small>Per child, on school days</small>
+              <select id="homework">
+                <option>About 15 minutes</option><option selected>About 30 minutes</option><option>About 45 minutes</option><option>About 1 hour</option><option>1.5 hours or more</option><option>None, school handles it</option>
+              </select></label>
+            <label class="f">Screen time<small>Tablet, TV, games</small>
+              <select id="screens">
+                <option>None on school days, some on weekends</option><option selected>Up to 30 minutes a day</option><option>Up to 1 hour a day</option><option>Up to 2 hours a day</option><option>Weekends only</option><option>No screen time at all</option>
+              </select></label>
+
+            <label class="f">Outdoor / active play<small>Playground, cycling, sports</small>
+              <select id="outdoor">
+                <option>At least 30 minutes a day</option><option selected>About 1 hour a day</option><option>Mostly on weekends</option><option>Flexible</option>
+              </select></label>
+            <label class="f">Downtime &amp; free play
+              <select id="downtime">
+                <option>Keep it light</option><option selected>A healthy balance</option><option>Lots of unstructured time</option>
+              </select></label>
+
+            <label class="f">Travel buffer between places<small>Class to class, school to home</small>
+              <select id="buffer">
+                <option>None, everything is walkable</option><option>10 minutes</option><option selected>20 minutes</option><option>30 minutes</option><option>45 minutes or more</option>
+              </select></label>
+            <label class="f">How should weekends feel?
+              <select id="weekend">
+                <option>Relaxed, mostly family time</option><option selected>Balanced, some learning, some play</option><option>Productive, catch-up and enrichment</option><option>Leave weekends blank</option>
+              </select></label>
+
+            <label class="f full">Meal times<small>Roughly, so the plan works around them</small>
+              <input type="text" id="meals" placeholder="e.g. Breakfast 7am, lunch 12:30pm, dinner 6:30pm"></label>
+
+            <label class="f full">Anything the schedule must avoid or include?<small>Non-negotiables, sensitivities, family traditions</small>
+              <textarea id="avoid" placeholder="e.g. No activities after 7:30pm. Sunday is church and grandparents' lunch. Youngest naps at 2pm."></textarea></label>
+
+            <label class="check full"><input type="checkbox" id="share" checked> <span>Where possible, line up siblings' activities so they can share travel or do things together.</span></label>
+            <label class="check full"><input type="checkbox" id="chores"> <span>Include small, age-appropriate chores (tidy toys, set the table, etc.).</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="part">
+        <p class="part-label">Part 3 · Your PDF</p>
+        <div class="card">
+          <div class="grid">
+            <label class="f">Layout
+              <select id="layout">
+                <option selected>One page per child</option><option>One page with all children side by side</option>
+              </select></label>
+            <label class="f">Colours
+              <select id="colours">
+                <option selected>Colour-coded by activity type (school, classes, meals, free time)</option><option>Colour-coded, one colour per child</option><option>Black &amp; white, printer-friendly</option>
+              </select></label>
+            <label class="f">Show times as
+              <select id="clock">
+                <option selected>12-hour (4:00 PM)</option><option>24-hour (16:00)</option>
+              </select></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="gen-row">
+        <button type="submit" class="btn btn-primary" id="genBtn">Generate my prompt ↓</button>
+        <div class="err" id="err" role="alert"></div>
+        <div class="privacy">🔒 Nothing leaves your browser. This page builds your prompt on your own device.</div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="output">
+  <div class="wrap">
+    <div class="card out-card">
+      <h2 class="section-title" style="font-size:28px">Your prompt is <span class="hl">ready</span> 🎉</h2>
+      <p class="section-sub" style="margin-bottom:0">Copy it, then paste it into ChatGPT or Claude. You can edit the text below first if you like.</p>
+      <div class="out-actions">
+        <button class="btn btn-primary" id="copyBtn" type="button">Copy prompt</button>
+        <button class="btn btn-ghost" id="dlBtn" type="button">Save as .txt</button>
+        <button class="btn btn-ghost" id="editBtn" type="button">← Edit my answers</button>
+      </div>
+      <textarea id="promptOut" aria-label="Your generated prompt"></textarea>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="chatgpt">ChatGPT</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="claude">Claude</button>
+      </div>
+      <div class="tabpanel" id="panel-chatgpt">
+        <ol>
+          <li>Open <a href="https://chatgpt.com" target="_blank" rel="noopener"><strong>chatgpt.com</strong></a> and log in. A standard account works.</li>
+          <li>Start a new chat. If you uploaded timetables above, <strong>attach those same files</strong> using the + button.</li>
+          <li>Paste your prompt and press Enter.</li>
+          <li>It may ask a couple of clarifying questions. Answer them, then ask it to <em>"create the PDF"</em> and tap the download link it gives you.</li>
+        </ol>
+      </div>
+      <div class="tabpanel" id="panel-claude" hidden>
+        <ol>
+          <li>Open <a href="https://claude.ai" target="_blank" rel="noopener"><strong>claude.ai</strong></a> and log in.</li>
+          <li>Start a new chat. If you uploaded timetables above, <strong>attach those same files</strong> using the + button.</li>
+          <li>Paste your prompt and press Enter.</li>
+          <li>Answer any clarifying questions, then ask it to <em>"create the PDF"</em>. If it builds a page instead, open it and choose Print → Save as PDF.</li>
+        </ol>
+      </div>
+      <div class="note">💡 <strong>Not quite right?</strong> Just reply in the chat: "Move piano to Wednesday", "Add more downtime", "Make it simpler". Then ask for the PDF again.</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>The Learning Mama</strong> · A tool for parents. The AI drafts the plan, you know your kids best, so tweak it until it feels right.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied ✓</div>
+
+<template id="kidTpl">
+  <div class="card kid">
+    <div class="kid-head">
+      <h3><span class="dot"></span><span class="kid-title">Child 1</span></h3>
+      <button type="button" class="link-btn danger rm-kid">Remove</button>
+    </div>
+    <div class="grid">
+      <label class="f">Name or nickname<input type="text" class="k-name" placeholder="e.g. Mia" autocomplete="off"></label>
+      <label class="f">Age or school level<input type="text" class="k-age" placeholder="e.g. 7, Primary 1" autocomplete="off"></label>
+      <label class="f">Wakes up<input type="time" class="k-wake" value="06:30"></label>
+      <label class="f">Bedtime<input type="time" class="k-bed" value="20:30"></label>
+    </div>
+
+    <p class="sub-h">School or childcare</p>
+    <div class="grid">
+      <label class="f">Starts<input type="time" class="k-s-start" value="07:30"></label>
+      <label class="f">Ends<input type="time" class="k-s-end" value="13:30"></label>
+      <div class="full">
+        <label class="f" style="margin:0">Days<small>Tap to switch on or off</small></label>
+        <div class="chips days k-sdays"></div>
+      </div>
+    </div>
+
+    <p class="sub-h">Enrichment classes &amp; fixed commitments</p>
+    <p class="hint">Type them in, upload a timetable below, or both.</p>
+    <div class="acts"></div>
+    <button type="button" class="add-btn add-act">+ Add a class or activity</button>
+
+    <p class="sub-h">Or upload their timetable</p>
+    <div class="upload">
+      <input type="file" class="k-file" accept="image/*,.pdf" multiple>
+      <p>📎 Your file stays on your device. After you paste your prompt into ChatGPT or Claude, attach the same file there. We'll tell the AI to expect it.</p>
+    </div>
+
+    <label class="f" style="margin-top:18px">Anything else about this child?<small>Energy levels, struggles, interests, sensitivities</small>
+      <textarea class="k-notes" placeholder="e.g. Tires out after 4pm. Loves drawing. Needs a snack before homework."></textarea></label>
+  </div>
+</template>
+
+<template id="actTpl">
+  <div class="act">
+    <div class="row">
+      <label class="f name">Activity<input type="text" class="a-name" placeholder="e.g. Piano lesson" autocomplete="off"></label>
+      <label class="f">From<input type="time" class="a-start"></label>
+      <label class="f">To<input type="time" class="a-end"></label>
+    </div>
+    <div>
+      <label class="f" style="margin:0">Days</label>
+      <div class="chips days a-days"></div>
+    </div>
+    <div class="foot">
+      <label class="f">Place or notes<input type="text" class="a-place" placeholder="e.g. Music Studio, bring books (optional)" autocomplete="off"></label>
+      <button type="button" class="link-btn danger rm-act">Remove</button>
+    </div>
+  </div>
+</template>
+
+<script>
+(function(){
+  var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var MAX_KIDS=3;
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show')},1800)}
+
+  /* chips */
+  function makeDayChips(container,selected){
+    DAYS.forEach(function(d,i){
+      var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=d;
+      b.setAttribute('aria-pressed',selected.indexOf(i)>-1?'true':'false');
+      container.appendChild(b);
+    });
+  }
+  document.addEventListener('click',function(e){
+    var chip=e.target.closest('.chip');
+    if(chip){chip.setAttribute('aria-pressed',chip.getAttribute('aria-pressed')==='true'?'false':'true')}
+  });
+
+  /* kids */
+  var kidsEl=$('#kids');
+  function renumber(){
+    var cards=$$('.kid',kidsEl);
+    cards.forEach(function(c,i){
+      c.setAttribute('data-k',i+1);
+      $('.kid-title',c).textContent='Child '+(i+1);
+      $('.rm-kid',c).style.display=cards.length>1?'':'none';
+    });
+    $('#addKid').style.display=cards.length>=MAX_KIDS?'none':'';
+  }
+  function addAct(card){
+    var a=document.importNode($('#actTpl').content,true).firstElementChild;
+    makeDayChips($('.a-days',a),[]);
+    $('.acts',card).appendChild(a);
+    return a;
+  }
+  function addKid(){
+    if($$('.kid',kidsEl).length>=MAX_KIDS)return;
+    var k=document.importNode($('#kidTpl').content,true).firstElementChild;
+    makeDayChips($('.k-sdays',k),[0,1,2,3,4]);
+    kidsEl.appendChild(k);
+    addAct(k);
+    renumber();
+    return k;
+  }
+  $('#addKid').addEventListener('click',function(){var k=addKid();if(k){$('.k-name',k).focus()}});
+  kidsEl.addEventListener('click',function(e){
+    var card=e.target.closest('.kid');if(!card)return;
+    if(e.target.closest('.add-act')){var a=addAct(card);$('.a-name',a).focus()}
+    else if(e.target.closest('.rm-act')){e.target.closest('.act').remove()}
+    else if(e.target.closest('.rm-kid')){card.remove();renumber()}
+  });
+  addKid();
+
+  /* helpers */
+  function fmt(t,h24){
+    if(!t)return '';
+    var p=t.split(':'),h=+p[0],m=p[1];
+    if(h24)return String(h).padStart(2,'0')+':'+m;
+    return (h%12||12)+':'+m+' '+(h>=12?'PM':'AM');
+  }
+  function dayStr(idx){
+    if(!idx.length)return '';
+    if(idx.length===7)return 'Every day';
+    var runs=[],s=idx[0],p=idx[0];
+    for(var i=1;i<=idx.length;i++){
+      if(idx[i]===p+1){p=idx[i];continue}
+      runs.push([s,p]);s=idx[i];p=idx[i];
+    }
+    return runs.map(function(r){
+      var n=r[1]-r[0];
+      if(n===0)return DAYS[r[0]];
+      if(n===1)return DAYS[r[0]]+', '+DAYS[r[1]];
+      return DAYS[r[0]]+'–'+DAYS[r[1]];
+    }).join(', ');
+  }
+  function pressed(container){
+    return $$('.chip',container).map(function(c,i){return c.getAttribute('aria-pressed')==='true'?i:-1}).filter(function(i){return i>-1});
+  }
+  function val(sel,r){var el=$(sel,r);return el?el.value.trim():''}
+  function chosen(id){var s=$(id);return s.options[s.selectedIndex].text}
+
+  /* build prompt */
+  function build(){
+    var h24=$('#clock').value.indexOf('24')>-1 || chosen('#clock').indexOf('24')>-1;
+    var cards=$$('.kid',kidsEl);
+    var anyUpload=false, L=[];
+    var n=cards.length;
+
+    L.push('You are my family scheduling assistant. Build a simple, realistic, balanced weekly routine for my '+(n===1?'child':n+' children')+', then give it to me as a downloadable PDF. This is an evergreen timetable for a typical week, so do not use any specific dates.');
+    L.push('');
+    L.push('# ABOUT MY FAMILY');
+    L.push('Language for the timetable: '+(val('#lang')||'English'));
+    L.push('');
+
+    cards.forEach(function(c,i){
+      var name=val('.k-name',c)||('Child '+(i+1));
+      var age=val('.k-age',c);
+      L.push('## Child '+(i+1)+': '+name+(age?' ('+age+')':''));
+      var wake=val('.k-wake',c),bed=val('.k-bed',c);
+      if(wake||bed)L.push('- Wakes up: '+(fmt(wake,h24)||'not given')+' | Bedtime: '+(fmt(bed,h24)||'not given'));
+      var sd=pressed($('.k-sdays',c)),ss=val('.k-s-start',c),se=val('.k-s-end',c);
+      if(sd.length){L.push('- School/childcare: '+dayStr(sd)+', '+(fmt(ss,h24)||'?')+' to '+(fmt(se,h24)||'?')+' (fixed)')}
+      else L.push('- School/childcare: none');
+      var acts=$$('.act',c).map(function(a){
+        var nm=val('.a-name',a);if(!nm)return null;
+        var d=dayStr(pressed($('.a-days',a))),s=val('.a-start',a),e=val('.a-end',a),pl=val('.a-place',a);
+        var when=[d||'day not given',(s||e)?((fmt(s,h24)||'?')+' to '+(fmt(e,h24)||'?')):'time not given'].join(', ');
+        return '  - '+nm+': '+when+(pl?' ('+pl+')':'');
+      }).filter(Boolean);
+      var files=Array.prototype.slice.call($('.k-file',c).files||[]).map(function(f){return f.name});
+      if(acts.length){L.push('- Fixed commitments (cannot move):');acts.forEach(function(a){L.push(a)})}
+      else if(!files.length)L.push('- Fixed commitments: none listed');
+      if(files.length){
+        anyUpload=true;
+        L.push('- Timetable file(s) attached to this chat for '+name+': '+files.join(', ')+'. Read them carefully and treat everything in them as fixed commitments'+(acts.length?', in addition to the list above':'')+'.');
+      }
+      var notes=val('.k-notes',c);if(notes)L.push('- About '+name+': '+notes);
+      L.push('');
+    });
+
+    L.push('# MY FAMILY\'S PREFERENCES');
+    L.push('- Homework / study / reading: '+chosen('#homework')+' per child on school days');
+    L.push('- Screen time: '+chosen('#screens'));
+    L.push('- Outdoor / active play: '+chosen('#outdoor'));
+    L.push('- Downtime & free play: '+chosen('#downtime'));
+    L.push('- Travel buffer between places: '+chosen('#buffer'));
+    L.push('- Weekends: '+chosen('#weekend'));
+    var meals=val('#meals');L.push('- Meal times: '+(meals||'not specified, use sensible defaults for each child\'s age'));
+    var av=val('#avoid');if(av)L.push('- Must avoid or include: '+av);
+    if(n>1&&$('#share').checked)L.push('- Siblings: where possible, line up activities so they can share travel or do things together.');
+    if($('#chores').checked)L.push('- Include small, age-appropriate chores.');
+    L.push('');
+
+    L.push('# HOW TO WORK');
+    L.push('1. Read everything above'+(anyUpload?' and the attached timetable file(s)':'')+'. If anything is missing, unreadable or contradictory, ask me up to 5 short questions first. Otherwise, go straight ahead.');
+    L.push('2. Treat school and all fixed commitments as non-negotiable. Never move or drop them.');
+    L.push('3. Fill the gaps around them with meals, homework or reading, outdoor play, downtime, wind-down and bedtime routines, matching each child\'s age and energy.');
+    L.push('4. Before finalising, check for: clashes between children, missing travel time, back-to-back days with no breaks, too little sleep for their age, and anything that breaks my "must avoid" notes.');
+    L.push('5. Reply in chat with a short summary of the plan, plus a bullet list of any assumptions you made and anything you want me to double-check.');
+    L.push('');
+
+    L.push('# OUTPUT: A DOWNLOADABLE PDF');
+    L.push('Then create the timetable as a PDF file I can download and print. Keep it as SIMPLE as possible, so a busy parent can understand it at a glance:');
+    L.push('- Layout: '+chosen('#layout')+'.');
+    L.push('- Format: one clean Monday to Sunday grid, with days across the top and times down the side.');
+    L.push('- Merge blocks: combine anything that runs back to back into ONE single block per day. For example, show school as one block ("School, 7:30 AM to 1:30 PM"), not many small lines. Do the same for meals, homework and free time.');
+    L.push('- Only show the main parts of the day: school, classes and activities, meals, homework or study, free play or outdoor time, and bedtime. Leave out tiny steps like "pack bag" or "brush teeth".');
+    L.push('- Each block gets a short label (1 to 3 words) and its start and end time. No long descriptions or notes inside the grid.');
+    L.push('- Colours: '+chosen('#colours')+'. Add a small legend at the bottom.');
+    L.push('- Use big, easy-to-read text with plenty of white space. Title each page with the child\'s name and "Weekly Timetable". Do not include any dates.');
+    L.push('- Make sure no text is cut off and that it prints cleanly on A4, landscape, on a single page per child.');
+    L.push('If you cannot generate a PDF file directly, produce a single self-contained, print-ready HTML file instead, and tell me exactly how to open it and use Print → Save as PDF.');
+    L.push('');
+    L.push('When you are done, ask me if I would like any changes.');
+    return L.join('\n');
+  }
+
+  /* generate */
+  $('#form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var err=$('#err');err.textContent='';
+    var cards=$$('.kid',kidsEl);
+    var anyInfo=cards.some(function(c){
+      return $$('.a-name',c).some(function(i){return i.value.trim()}) || ($('.k-file',c).files&&$('.k-file',c).files.length) || $('.k-name',c).value.trim();
+    });
+    if(!anyInfo){err.textContent='Add at least one child\'s name, a class, or a timetable file first.';return}
+    $('#promptOut').value=build();
+    $('#output').classList.add('show');
+    $('#output').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  $('#editBtn').addEventListener('click',function(){$('#setup').scrollIntoView({behavior:'smooth'})});
+
+  /* copy / download */
+  function copyText(text){
+    if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(text)}
+    return new Promise(function(res,rej){
+      var ta=$('#promptOut');ta.focus();ta.select();
+      try{document.execCommand('copy')?res():rej()}catch(x){rej(x)}
+    });
+  }
+  $('#copyBtn').addEventListener('click',function(){
+    copyText($('#promptOut').value).then(function(){toast('Copied ✓ Now paste it into ChatGPT or Claude')}).catch(function(){toast('Press and hold the text to copy')});
+  });
+  $('#dlBtn').addEventListener('click',function(){
+    var blob=new Blob([$('#promptOut').value],{type:'text/plain'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='weekly-schedule-prompt.txt';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},500);
+  });
+
+  /* tabs */
+  $$('.tab').forEach(function(t){
+    t.addEventListener('click',function(){
+      $$('.tab').forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
+      ['chatgpt','claude'].forEach(function(k){$('#panel-'+k).hidden=(k!==t.getAttribute('data-tab'))});
+    });
+  });
+})();
+</script>
+</body>
+</html>

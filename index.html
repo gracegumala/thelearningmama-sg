@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Learning Mama · AI tools for Singapore parents</title>
+<meta name="description" content="Simple AI tools that plan your kids' week, choose enrichment and budget the holidays. By parents, for parents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1E3B24; --green-l:#3A6B45; --hero:#2E76C2; --cream:#F7F3EC; --brown:#4A2218; --blue:#3E8FD8; --blue-d:#2B6DB0; --blue-soft:#C9DFF2;
+  --yellow:#F6C94C; --yellow-soft:#FBEBB5; --pink:#E79BD9; --pink-soft:#F5CFEA; --orange:#EE7F4B; --orange-soft:#FADCC8; --grey:#E8E3DB;
+  --bg:var(--cream); --bg2:#F0EBE2; --card:#FFFDF9; --ink:var(--brown); --muted:#7A6A62; --line:#E3DCD0;
+  --radius:22px; --shadow:0 2px 0 rgba(74,34,24,.04),0 10px 28px rgba(74,34,24,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:"Poppins","DM Sans",sans-serif;font-weight:700;line-height:1.15;margin:0;letter-spacing:-.015em}
+a{color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px;position:relative;z-index:2}
+section{padding:64px 0;position:relative;overflow:hidden}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brown);background:var(--blue-soft);padding:6px 14px;border-radius:99px}
+.hl{color:var(--blue)}
+.serif{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600}
+.sq{position:absolute;pointer-events:none;fill:none;stroke-linecap:round;stroke-linejoin:round;z-index:1}
+.sq path{stroke-width:15}
+.section-title{font-size:clamp(26px,4.5vw,38px);margin:14px 0 10px}
+.section-sub{color:var(--muted);margin:0 0 30px;max-width:600px}
+.center{text-align:center}.center .section-sub{margin-left:auto;margin-right:auto}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:var(--green-l);color:var(--cream)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{text-decoration:none;font-size:18px;display:flex;align-items:baseline;gap:5px;color:var(--cream)}
+.brand .serif{color:#fff;font-size:20px}
+.brand b{font-family:"Poppins",sans-serif;font-weight:700;letter-spacing:.01em;color:var(--yellow)}
+.nav-links{display:flex;gap:20px;align-items:center;font-size:14px}
+.nav-links a{text-decoration:none;color:#E6F0E8}
+.nav-links a:hover{color:#fff}
+.nav-links a.cta{background:var(--yellow);color:var(--green);font-weight:700;padding:8px 16px;border-radius:99px}
+@media(max-width:600px){.nav-links a.hide-sm{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border:0;border-radius:99px;padding:14px 26px;cursor:pointer;text-decoration:none;transition:transform .08s}
+.btn:active{transform:translateY(1px)}
+.btn-yellow{background:var(--yellow);color:var(--green)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-ghost{background:transparent;color:inherit;border:2px solid currentColor}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+.on-light .btn:focus-visible,.on-light a:focus-visible{outline-color:var(--blue)}
+
+/* hero (PersonaLAB cover: deep green, yellow headline, curly ribbons) */
+.hero{background:var(--green);color:#fff;padding:76px 0 110px}
+.hero .eyebrow{background:rgba(255,255,255,.12);color:var(--cream)}
+.hero h1{font-size:clamp(36px,7vw,60px);margin:22px 0 18px;color:var(--yellow);max-width:720px}
+.hero h1 em{font-style:normal;color:#fff}
+.hero h1{max-width:none;font-size:clamp(26px,7.4vw,58px)}
+.hero h1 .nw{white-space:nowrap}
+.hero p.lead{font-size:19px;color:#E4EEE6;max-width:580px;margin:0 0 30px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+.pill{font-size:13px;font-weight:500;color:var(--green);background:var(--cream);padding:6px 14px;border-radius:99px}
+.pill:nth-child(2){background:var(--blue-soft)} .pill:nth-child(3){background:var(--yellow-soft)} .pill:nth-child(4){background:var(--pink-soft)}
+
+@media(max-width:600px){
+  .hero{padding:60px 0 90px}
+  .hero .sq:nth-of-type(1){width:190px !important;top:-70px !important;right:-50px !important}
+  .hero .sq:nth-of-type(2){width:200px !important;right:-70px !important;bottom:-50px !important}
+  .hero .sq:nth-of-type(3){width:170px !important;left:-60px !important;bottom:-50px !important}
+  section{padding:52px 0}
+  .about .sq,.join .sq{width:150px !important;opacity:.9}
+  .about .sq:nth-of-type(1){top:auto !important;bottom:-40px !important;right:-50px !important}
+  .about .sq:nth-of-type(2){display:none}
+  .join .sq:nth-of-type(1){top:auto !important;bottom:-50px !important;left:-50px !important}
+  .join .sq:nth-of-type(2){bottom:-50px !important;right:-50px !important}
+  .join .hero-actions{padding-bottom:40px}
+}
+
+/* familiar */
+.familiar{background:var(--cream)}
+.familiar h2{text-align:center}
+.bubbles{display:grid;gap:14px;max-width:680px;margin:30px auto 0}
+.bubble{background:var(--blue-soft);border-radius:22px;padding:20px 26px;text-align:center;font-size:18px}
+.bubble b{font-weight:700}
+.familiar .close{text-align:center;margin:30px auto 0;font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600;font-size:24px;color:var(--blue-d)}
+
+/* tools */
+.tools{background:var(--bg2)}
+.tool-grid{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.tool-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.tool-grid{grid-template-columns:1fr}}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--tc,var(--blue))}
+.tool:nth-child(2){--tc:var(--yellow)} .tool:nth-child(3){--tc:var(--orange)} .tool:nth-child(4){--tc:var(--pink)} .tool:nth-child(5){--tc:var(--blue)} .tool:nth-child(6){--tc:var(--yellow)}
+.tool .ico{font-size:28px;line-height:1}
+.tool h3{font-size:19px}
+.tool p{margin:0;font-size:15px;color:#5E4B44;flex:1}
+.status{align-self:flex-start;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;background:var(--grey);color:var(--brown)}
+.status.live{background:var(--green);color:var(--yellow)}
+.tool.live{border:3px solid var(--blue);border-top-width:6px}
+.tool .btn{align-self:flex-start;padding:10px 20px;font-size:14px}
+.tool-note{margin-top:22px;font-size:14px;color:var(--muted)}
+
+/* how */
+.how .steps{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:720px){.how .steps{grid-template-columns:1fr}}
+.step{border-radius:var(--radius);padding:24px;color:var(--brown)}
+.step:nth-child(1){background:var(--blue-soft)} .step:nth-child(2){background:var(--yellow-soft)} .step:nth-child(3){background:var(--orange-soft)}
+.step .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--brown);color:var(--cream);margin-bottom:12px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{margin:0;font-size:15px}
+
+/* what you get (PersonaLAB "What you get?" checklist) */
+.get{background:var(--bg2)}
+.get-grid{display:grid;gap:34px;grid-template-columns:1.2fr 1fr;align-items:center}
+@media(max-width:760px){.get-grid{grid-template-columns:1fr}}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.checks li{display:flex;gap:12px;align-items:flex-start;font-size:17px}
+.checks li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:8px;background:var(--green);color:var(--yellow);display:grid;place-items:center;font-weight:700;font-size:15px;margin-top:1px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.tag{font-weight:700;font-size:14px;padding:8px 18px;border-radius:99px}
+.tag:nth-child(1){background:var(--blue);color:#fff} .tag:nth-child(2){background:var(--yellow);color:var(--green)} .tag:nth-child(3){background:var(--pink-soft)} .tag:nth-child(4){background:var(--blue-soft)}
+.sample{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.sample strong{font-family:"Poppins",sans-serif;font-size:15px;display:block;margin-bottom:12px}
+.mini{display:grid;grid-template-columns:34px repeat(5,1fr);gap:4px;font-size:11px}
+.mini div{border-radius:999px;padding:4px 6px;min-height:26px;text-align:center}
+.mini .h{background:var(--grey);font-weight:700}
+.mini .t{color:var(--muted);text-align:right;background:none}
+.mini .a{background:var(--orange-soft);color:#A8501F;font-weight:500}
+.mini .b{background:var(--blue-soft);color:var(--blue-d);font-weight:500}
+.mini .c{background:var(--yellow-soft);color:#85650A;font-weight:500}
+.mini .x{background:none}
+.mini .s{background:var(--grey);color:var(--muted);grid-column:2/7}
+.sample small{display:block;margin-top:10px;color:var(--muted);font-size:12px}
+
+/* perks */
+.perks{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.perks{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.perks{grid-template-columns:1fr}}
+.perk{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.pico{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:28px;margin-bottom:14px}
+.pico.b{background:var(--blue-soft)} .pico.y{background:var(--yellow-soft)} .pico.p{background:var(--pink-soft)} .pico.o{background:var(--orange-soft)}
+.perk h3{font-size:18px;margin-bottom:6px}
+.perk p{margin:0;font-size:15px;color:#5E4B44}
+.center-tags{justify-content:center;margin-top:30px}
+
+/* about */
+.about{background:var(--pink-soft);color:var(--brown)}
+.about .eyebrow{background:#fff;color:var(--brown)}
+.about h2{color:var(--hero);font-size:clamp(28px,5vw,42px);margin:16px 0 18px;max-width:640px}
+.about p{color:#5A2F2A;font-size:18px;max-width:640px;margin:0 0 14px}
+.about .duo{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:28px;max-width:700px}
+@media(max-width:600px){.about .duo{grid-template-columns:1fr}}
+.person{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border-top:6px solid var(--blue)}
+.person:nth-child(2){border-top-color:var(--orange)}
+.person h3{color:var(--hero);font-size:20px;margin-bottom:6px}
+.person p{font-size:15px;margin:0;color:#5E4B44}
+.promise{margin-top:28px;background:var(--hero);color:#fff;border-radius:var(--radius);padding:20px 24px;max-width:700px;font-weight:700;font-size:17px}
+.promise span{display:block;font-weight:400;font-size:15px;margin-top:4px;color:#EAF3FC}
+
+/* faq */
+.faq .qa{max-width:700px;margin:0 auto;display:grid;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px 20px}
+summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;line-height:1;color:var(--blue-d)}
+details[open] summary::after{content:"–"}
+details p{margin:0 0 16px;color:#5E4B44}
+
+/* join */
+.join{background:var(--hero);color:#fff;text-align:center;padding:76px 0}
+.join h2{font-size:clamp(28px,5vw,44px);color:var(--yellow);margin-bottom:14px}
+.join p{color:#EAF3FC;font-size:18px;max-width:540px;margin:0 auto 28px}
+.join .hero-actions{justify-content:center}
+
+.wl{max-width:460px;margin:0 auto 24px;display:grid;gap:12px;text-align:left}
+.wl-f{display:block;font-size:14px;font-weight:700;color:#fff}
+.wl input[type=email],.wl select{width:100%;font:inherit;font-weight:400;font-size:16px;color:var(--brown);background:#fff;border:0;border-radius:14px;padding:12px 16px;margin-top:6px;min-height:48px}
+.wl input:focus-visible,.wl select:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.wl .btn{width:100%}
+.wl-msg{margin:0 !important;min-height:22px;font-size:15px !important;font-weight:700;color:var(--yellow) !important;text-align:center}
+.join .wl .wl-priv{margin:0;font-size:13px;color:#DCE9F7;text-align:center}
+.join .hero-actions .btn-ghost{padding:10px 20px;font-size:14px}
+footer{background:var(--green);padding:34px 16px 44px;color:#C9D8CC;font-size:14px;text-align:center}
+footer strong{color:var(--yellow)}
+footer p{margin:6px auto;max-width:620px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">The <span class="serif">Learning</span> <b>MAMA</b></a>
+    <nav class="nav-links" aria-label="Main">
+      <a class="hide-sm" href="#tools">Tools</a>
+      <a class="hide-sm" href="#about">About us</a>
+      <a class="hide-sm" href="#faq">FAQ</a>
+      <a class="cta" href="#join">Get early access</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="sq" style="right:-40px;top:-40px;width:340px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F5CFEA" transform="rotate(20 100 65)"/></svg>
+  <svg class="sq" style="right:-30px;bottom:-30px;width:320px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#3E8FD8" transform="rotate(-8 100 65)"/></svg>
+  <svg class="sq" style="left:-60px;bottom:-40px;width:260px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#EE7F4B" transform="rotate(5 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">AI tools for Singapore parents</span>
+    <h1>The AI helper<br><em class="nw">every SG parent needs.</em></h1>
+    <p class="lead">Weekly timetables, enrichment picks, holiday plans and homework help, all in minutes. Built by parents, for parents.</p>
+    <div class="hero-actions">
+      <a class="btn btn-yellow" href="weekly-planner.html">Try the weekly planner →</a>
+      <a class="btn btn-ghost" href="#tools">See all tools</a>
+    </div>
+    <div class="pills">
+      <span class="pill">Ready in 5 minutes</span>
+      <span class="pill">Made for Singapore</span>
+      <span class="pill">Works with ChatGPT or Claude</span>
+      <span class="pill">No tech skills needed</span>
+    </div>
+  </div>
+</section>
+
+<!-- DOES THIS SOUND FAMILIAR -->
+<section class="familiar on-light">
+  <svg class="sq" style="left:-50px;top:10px;width:200px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#EE7F4B" transform="rotate(-10 100 65)"/></svg>
+  <svg class="sq" style="right:-60px;bottom:0;width:220px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F6E08A" transform="rotate(10 100 65)"/></svg>
+  <div class="wrap">
+    <h2 class="section-title">Does this <span class="hl">sound familiar?</span></h2>
+    <div class="bubbles">
+      <div class="bubble">Three classes, two schools, one chat group… and <b>you're the only one holding the calendar.</b></div>
+      <div class="bubble">Everyone has an opinion on tuition, but <b>nobody tells you what it should actually cost.</b></div>
+      <div class="bubble">You want your child to use AI well, but <b>you don't know where to start.</b></div>
+    </div>
+    <p class="close">So we built the tools we wished we had.</p>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools on-light" id="tools">
+  <svg class="sq" style="right:-70px;top:20px;width:230px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#BFD9F0" transform="rotate(15 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">The toolkit</span>
+    <h2 class="section-title">Pick a tool. <span class="hl">Save an evening.</span></h2>
+    <p class="section-sub">Each tool takes about five minutes, asks only what it needs, and gives you something you can use straight away.</p>
+    <div class="tool-grid">
+      <article class="tool live">
+        <div class="ico" aria-hidden="true">🗓️</div>
+        <span class="status live">Live now</span>
+        <h3>Weekly Routine Planner</h3>
+        <p>Add each child's school and classes. Get a ready-to-paste prompt that builds a colour-coded weekly timetable you can print for the fridge.</p>
+        <a class="btn btn-blue" href="weekly-planner.html">Make my timetable →</a>
+      </article>
+      <article class="tool">
+        <div class="ico" aria-hidden="true">🧭</div>
+        <span class="status">Coming soon</span>
+        <h3>Enrichment Finder</h3>
+        <p>Not sure what your child needs? Answer a few questions on age, budget and goals and get a short list of what to try first, and what to skip.</p>
+      </article>
+      <article class="tool">
+        <div class="ico" aria-hidden="true">💰</div>
+        <span class="status">Coming soon</span>
+        <h3>Enrichment Budget Planner</h3>
+        <p>See what a realistic monthly enrichment budget looks like for your family, and where each dollar goes.</p>
+      </article>
+      <article class="tool">
+        <div class="ico" aria-hidden="true">✏️</div>
+        <span class="status">Coming soon</span>
+        <h3>Homework Helper Prompts</h3>
+        <p>Prompts that make AI coach your child with questions instead of handing over answers. Pick the subject and level, then copy.</p>
+      </article>
+      <article class="tool">
+        <div class="ico" aria-hidden="true">🏖️</div>
+        <span class="status">Coming soon</span>
+        <h3>Holiday Planner</h3>
+        <p>Camps, revision and rest, balanced across the school break. Built for the March holidays first.</p>
+      </article>
+      <article class="tool">
+        <div class="ico" aria-hidden="true">📚</div>
+        <span class="status">Coming soon</span>
+        <h3>Subject Learning Plan</h3>
+        <p>A simple week-by-week plan for one subject, matched to your child's level and how much time you really have.</p>
+      </article>
+    </div>
+    <p class="tool-note">Tell us which tool you want most on Instagram and we'll build it next.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how on-light" id="how">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">How it works</span>
+      <h2 class="section-title">Three steps. <span class="hl">No coding.</span></h2>
+      <p class="section-sub">Works with your ChatGPT or Claude account.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Tell us about your family</h3><p>Answer a few simple questions. Skip anything that doesn't apply.</p></div>
+      <div class="step"><div class="num">2</div><h3>Get your ready-made prompt</h3><p>We turn your answers into one clear prompt, built by parents for parents.</p></div>
+      <div class="step"><div class="num">3</div><h3>Paste, then download</h3><p>Paste it into your AI of choice and get a plan you can print or add to your calendar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="get on-light">
+  <svg class="sq" style="left:-60px;bottom:-20px;width:200px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F5CFEA" transform="rotate(-10 100 65)"/></svg>
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Why parents like them</span>
+      <h2 class="section-title">Made for <span class="hl">real family life.</span></h2>
+      <p class="section-sub">Whether you're choosing a school, a class or a holiday camp, every tool is built to make the decision easier.</p>
+    </div>
+    <div class="perks">
+      <div class="perk"><div class="pico b" aria-hidden="true">⏱️</div><h3>Ready in minutes</h3><p>Answer a few simple questions and get something you can use today.</p></div>
+      <div class="perk"><div class="pico y" aria-hidden="true">🏫</div><h3>Built for Singapore</h3><p>Made around local schools, enrichment centres and the school calendar.</p></div>
+      <div class="perk"><div class="pico p" aria-hidden="true">🛡️</div><h3>AI with guardrails</h3><p>Prompts that help your child think for themselves, not just copy answers.</p></div>
+      <div class="perk"><div class="pico o" aria-hidden="true">💸</div><h3>Money-smart</h3><p>See what things really cost before you commit your time or budget.</p></div>
+      <div class="perk"><div class="pico b" aria-hidden="true">🧠</div><h3>Plain-English choices</h3><p>Clear comparisons and simple answers to "Is this worth it for my child?"</p></div>
+      <div class="perk"><div class="pico y" aria-hidden="true">💛</div><h3>By parents, for parents</h3><p>We do the research and testing, so you don't have to.</p></div>
+    </div>
+    <div class="tags center-tags">
+      <span class="tag">You tell us once. We do the rest.</span>
+      <span class="tag">No jargon</span>
+      <span class="tag">Parent-tested</span>
+      <span class="tag">No fuss</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <svg class="sq" style="right:-50px;top:-20px;width:260px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#3E8FD8" transform="rotate(20 100 65)"/></svg>
+  <svg class="sq" style="right:20px;bottom:-40px;width:260px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#EE7F4B" transform="rotate(-8 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">Why we exist</span>
+    <h2>Choosing the right education shouldn't feel like a full-time job.</h2>
+    <p>With hundreds of schools, enrichment centres and programmes, it's hard to know where to start. So we do the research and turn it into tools you can use in minutes.</p>
+    <div class="duo">
+      <div class="person"><h3>Grace</h3><p>Ex-ASEAN scholar who moved from Indonesia to Singapore at 14. Now a mum navigating the same questions you are.</p></div>
+      <div class="person"><h3>Gaby</h3><p>NUS graduate with a postgrad from INSEAD, and a mum doing the school and enrichment maths for her own family.</p></div>
+    </div>
+    <div class="promise">Our promise: honest and independent.<span>We only recommend what we'd recommend to a friend, and we always say when something is sponsored.</span></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq on-light" id="faq">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Questions</span>
+      <h2 class="section-title">Good to know</h2>
+    </div>
+    <div class="qa">
+      <details><summary>How much do the tools cost?</summary><p>You can try the first tool right now. As we add more tools and extras, pricing may change, and we'll always be clear about what costs money before you use it.</p></details>
+      <details><summary>Do I need a paid ChatGPT or Claude plan?</summary><p>No. A standard ChatGPT or Claude account is all you need.</p></details>
+      <details><summary>What happens to my children's details?</summary><p>The Weekly Routine Planner builds your prompt in your own browser, so nothing is sent to us. We'll say how each new tool handles your data before you use it. We recommend using first names or nicknames only.</p></details>
+      <details><summary>Is this only for Indonesian families?</summary><p>No. Any parent in Singapore, or planning a move here, is welcome. We simply know the Indonesian parent perspective well, and Bahasa Indonesia versions are on our wishlist.</p></details>
+      <details><summary>Can I trust what the AI says?</summary><p>AI can make mistakes. Use our plans as a starting point and always check school or provider details, prices and dates yourself.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="join" id="join">
+  <svg class="sq" style="left:-50px;top:-30px;width:260px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#A9CDEE" transform="rotate(10 100 65)"/></svg>
+  <svg class="sq" style="right:-50px;bottom:-30px;width:260px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#E79BD9" transform="rotate(-15 100 65)"/></svg>
+  <div class="wrap">
+    <h2>Ready to lighten the load?</h2>
+    <p>Join the list to hear first when each new tool goes live. No spam, just useful stuff for busy parents.</p>
+    <form class="wl" id="waitlist" novalidate>
+      <label class="wl-f">Your email
+        <input type="email" id="wl-email" name="email" autocomplete="email" placeholder="you@email.com" required>
+      </label>
+      <label class="wl-f">Which tool do you want most?
+        <select id="wl-tool" name="tool">
+          <option value="All" selected>All</option>
+          <option>Enrichment Finder</option>
+          <option>Enrichment Budget Planner</option>
+          <option>Homework Helper Prompts</option>
+          <option>Holiday Planner</option>
+          <option>Subject Learning Plan</option>
+        </select>
+      </label>
+      <input type="text" name="website" id="wl-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <button class="btn btn-yellow" type="submit" id="wl-btn">Notify me →</button>
+      <p class="wl-msg" id="wl-msg" role="status" aria-live="polite"></p>
+      <p class="wl-priv">We'll only use your email to tell you about new tools. Unsubscribe any time.</p>
+    </form>
+    <div class="hero-actions">
+      <a class="btn btn-ghost" href="weekly-planner.html">Try the weekly planner</a>
+      <a class="btn btn-ghost" href="https://www.instagram.com/thelearningmama_sg/" target="_blank" rel="noopener">Follow @thelearningmama_sg</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>The Learning Mama</strong> · Your SG family guide to parenting + education</p>
+  <p>Made by Grace &amp; Gaby. AI can make mistakes, so always double-check important details with your school or provider.</p>
+</footer>
+
+<script>
+/* WAITLIST SETUP: paste a form endpoint here (e.g. a Formspree URL like
+   "https://formspree.io/f/xxxxxxx", or any service that accepts a JSON POST).
+   Until then the form shows a "not connected" message instead of pretending to save. */
+var WAITLIST_ENDPOINT = "https://formspree.io/f/maeowbrk";
+
+(function(){
+  var form=document.getElementById('waitlist'), msg=document.getElementById('wl-msg'), btn=document.getElementById('wl-btn');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=document.getElementById('wl-email').value.trim();
+    if(document.getElementById('wl-hp').value){return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent='Please enter a valid email address.';return;}
+    if(!WAITLIST_ENDPOINT){msg.textContent="Sign-ups aren't switched on yet. Follow us on Instagram for now!";return;}
+    btn.disabled=true;msg.textContent='Sending…';
+    fetch(WAITLIST_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:email,tool:document.getElementById('wl-tool').value,source:'landing'})})
+    .then(function(r){if(!r.ok)throw new Error();msg.textContent="You're on the list! We'll be in touch.";form.reset();})
+    .catch(function(){msg.textContent='Something went wrong. Please try again.';})
+    .then(function(){btn.disabled=false;});
+  });
+})();
+</script>
+</body>
+</html>
