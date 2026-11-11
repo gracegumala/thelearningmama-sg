@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Holiday Revision Planner · The Learning Mama</title>
+<meta name="description" content="Answer a few questions and get a ready-to-paste prompt that makes ChatGPT or Claude build your child's holiday revision plan and a printable worksheet pack. Made for Singapore.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1E3B24; --hero:#2E76C2; --nav:#1B4F8F; --cream:#F7F3EC; --brown:#4A2218; --blue:#3E8FD8; --blue-d:#2B6DB0; --blue-soft:#C9DFF2;
+  --yellow:#F6C94C; --yellow-soft:#FBEBB5; --pink:#E79BD9; --pink-soft:#F5CFEA; --orange:#EE7F4B; --orange-soft:#FADCC8; --grey:#E8E3DB;
+  --bg:var(--cream); --bg2:#F0EBE2; --card:#FFFDF9; --ink:var(--brown); --muted:#7A6A62; --line:#E3DCD0;
+  --radius:22px; --shadow:0 2px 0 rgba(74,34,24,.04),0 10px 28px rgba(74,34,24,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:"Poppins","DM Sans",sans-serif;font-weight:700;line-height:1.15;margin:0;letter-spacing:-.015em}
+a{color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+section{padding:60px 0}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brown);background:var(--blue-soft);padding:6px 14px;border-radius:99px}
+.hl{color:var(--blue)}
+.serif{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:600}
+.sq{position:absolute;pointer-events:none;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sq path{stroke-width:15}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:var(--nav);color:var(--cream)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{text-decoration:none;font-size:18px;display:flex;align-items:baseline;gap:5px;color:var(--cream)}
+.brand .serif{color:#fff;font-size:20px}
+.brand b{font-family:"Poppins",sans-serif;font-weight:700;letter-spacing:.01em;color:var(--yellow)}
+.nav-links{display:flex;gap:18px;align-items:center;font-size:14px}
+.nav-links a{text-decoration:none;color:#E3EEF9}
+.nav-links a:hover{color:#fff}
+.nav-links a.cta{background:var(--yellow);color:var(--green);font-weight:700;padding:8px 16px;border-radius:99px}
+@media(max-width:560px){.nav-links a.hide-sm{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:var(--green);color:#fff;padding:64px 0 90px}
+.hero .wrap{position:relative;z-index:2}
+.hero .eyebrow{background:rgba(255,255,255,.12);color:var(--cream)}
+.hero h1{font-size:clamp(34px,7vw,56px);margin:20px 0 16px;color:var(--yellow)}
+.hero h1 em{font-style:normal;color:#fff}
+.hero p.lead{font-size:18px;color:#E4EEE6;max-width:560px;margin:0 0 28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border:0;border-radius:99px;padding:14px 26px;cursor:pointer;text-decoration:none;transition:transform .08s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-yellow{background:var(--yellow);color:var(--green)}
+.btn-ghost{background:transparent;color:inherit;border:2px solid currentColor}
+.card .btn-ghost{color:var(--brown);border-color:var(--line);background:#fff}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.tab:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.hero .btn:focus-visible{outline-color:var(--yellow)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.pill{font-size:13px;font-weight:500;color:var(--green);background:var(--cream);padding:6px 14px;border-radius:99px}
+.pill:nth-child(2){background:var(--blue-soft)} .pill:nth-child(3){background:var(--yellow-soft)} .pill:nth-child(4){background:var(--pink-soft)}
+@media(max-width:600px){
+  .hero{padding:56px 0 110px}
+  .hero .sq:nth-of-type(1){width:180px !important;right:-60px !important;bottom:-60px !important}
+  .hero .sq:nth-of-type(2){width:150px !important;right:-40px !important;top:-50px !important}
+  .hero .sq:nth-of-type(3){width:160px !important;left:-70px !important;bottom:-60px !important}
+}
+
+/* how */
+#how{position:relative;overflow:hidden}
+#how .wrap{position:relative;z-index:2}
+.section-title{font-size:clamp(26px,4.5vw,38px);margin-bottom:10px}
+.section-sub{color:var(--muted);margin:0 0 28px;max-width:580px}
+.steps{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.step{border-radius:var(--radius);padding:22px;color:var(--brown)}
+.step:nth-child(1){background:var(--blue-soft)} .step:nth-child(2){background:var(--yellow-soft)} .step:nth-child(3){background:var(--orange-soft)}
+.step .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--brown);color:var(--cream);margin-bottom:12px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{margin:0;font-size:15px}
+
+/* preview: what's in the printable pack */
+.pack{margin-top:28px;display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.pack{grid-template-columns:1fr 1fr}}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;aspect-ratio:1/1.3;display:flex;flex-direction:column;gap:6px;border-top:6px solid var(--sc,var(--blue))}
+.sheet:nth-child(2){--sc:var(--yellow)} .sheet:nth-child(3){--sc:var(--orange)} .sheet:nth-child(4){--sc:var(--pink)}
+.sheet strong{font-family:"Poppins",sans-serif;font-size:14px}
+.sheet small{color:var(--muted);font-size:12px;line-height:1.35}
+.bar{height:8px;border-radius:99px;background:var(--grey)}
+.bar.s{width:60%} .bar.m{width:80%}
+.ticks{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:auto}
+.ticks i{aspect-ratio:1;border-radius:6px;border:1.5px solid var(--line)}
+.ticks i.on{background:var(--yellow-soft);border-color:var(--yellow)}
+.lines{margin-top:auto;display:grid;gap:7px}
+.lines i{height:1.5px;background:var(--line)}
+.cal{margin-top:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.cal i{height:14px;border-radius:4px;background:var(--blue-soft)}
+.cal i:nth-child(3n){background:var(--orange-soft)} .cal i:nth-child(4n){background:var(--grey)}
+
+/* form */
+.form-shell{background:var(--bg2);position:relative;overflow:hidden}
+.form-shell .wrap{position:relative;z-index:2}
+.part{margin-top:32px}
+.part-label{display:inline-block;font-size:13px;font-weight:700;color:var(--brown);background:var(--blue-soft);padding:7px 16px;border-radius:99px;margin:0 0 14px}
+.part:nth-of-type(2) .part-label{background:var(--yellow-soft)}
+.part:nth-of-type(3) .part-label{background:var(--pink-soft)}
+.part:nth-of-type(4) .part-label{background:var(--orange-soft)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+.grid .full{grid-column:1/-1}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+label.f,.f-label{display:block;font-size:14px;font-weight:700}
+label.f small,.f-label small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:1px}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;margin-top:6px;min-height:46px}
+textarea{resize:vertical;min-height:84px}
+input::placeholder,textarea::placeholder{color:#B3A79F}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font:inherit;font-size:14px;font-weight:500;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;padding:6px 14px;cursor:pointer;min-height:38px}
+.chip[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.subj{background:var(--bg);border:1.5px dashed #D6CCBD;border-radius:18px;padding:14px;margin-top:12px}
+.subj h3{font-size:16px;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.subj h3::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--orange)}
+.subj .grid{gap:10px}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.soon{margin-top:18px;background:var(--pink-soft);border-radius:18px;padding:16px}
+.soon h3{font-size:17px;margin:8px 0 4px}
+.soon p{margin:0;font-size:14px}
+.status{display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;background:#fff;color:var(--brown)}
+.soon-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.soon-row input[type=email]{flex:1 1 200px;width:auto;margin-top:0;border-radius:99px;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--line);padding:10px 16px;min-height:46px}
+.soon-row .btn{padding:10px 20px}
+.soon-msg{font-weight:700;margin-top:8px !important;min-height:20px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--blue);flex:none}
+.check small{display:block;color:var(--muted);font-size:13px}
+.gen-row{margin-top:32px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.err{color:#B0361E;font-weight:700;font-size:14px;min-height:20px}
+.privacy{font-size:13px;color:var(--muted)}
+
+/* output */
+#output{display:none;background:var(--cream);position:relative;overflow:hidden}
+#output.show{display:block}
+#output .wrap{position:relative;z-index:2}
+.out-card{border:3px solid var(--blue)}
+.out-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+textarea#promptOut{min-height:340px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;line-height:1.5;background:var(--bg)}
+.tabs{display:flex;gap:6px;margin:22px 0 10px}
+.tab{font:inherit;font-weight:700;font-size:14px;border:0;background:var(--grey);color:var(--brown);padding:9px 18px;border-radius:99px;cursor:pointer;min-height:40px}
+.tab[aria-selected="true"]{background:var(--blue-soft)}
+.tabpanel ol{padding-left:20px;margin:0}
+.tabpanel li{margin-bottom:8px}
+.note{background:var(--yellow-soft);border-radius:18px;padding:14px 16px;font-size:14px;margin-top:14px}
+.note + .note{background:var(--pink-soft)}
+.follow{margin-top:22px;background:var(--green);color:#fff;border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+.follow h3{color:var(--yellow);font-size:22px;margin-bottom:8px}
+.follow p{color:#E4EEE6;margin:0 0 16px;max-width:520px;position:relative;z-index:2}
+.follow .btn{position:relative;z-index:2}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--hero);color:#fff;padding:12px 22px;border-radius:99px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{background:var(--green);padding:36px 0 46px;color:#C9D8CC;font-size:14px;text-align:center}
+footer strong{color:var(--yellow)}
+footer p{margin:6px auto;max-width:620px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html">The <span class="serif">Learning</span> <b>MAMA</b></a>
+    <nav class="nav-links">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="index.html#tools">All tools</a>
+      <a class="cta" href="#setup">Make my prompt</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <svg class="sq" style="right:-30px;bottom:-20px;width:300px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#3E8FD8" transform="rotate(-8 100 65)"/></svg>
+  <svg class="sq" style="right:90px;top:-30px;width:200px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F5CFEA" transform="rotate(20 100 65)"/></svg>
+  <svg class="sq" style="left:-50px;bottom:-30px;width:240px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#EE7F4B" transform="rotate(5 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">Tool for parents</span>
+    <h1>Holiday revision,<br><em>planned and printed.</em></h1>
+    <p class="lead">Tell us your child's level, subjects and holiday plans. Get a ready-to-paste prompt that makes ChatGPT or Claude build a light day-by-day plan and a printable worksheet pack you can put on the table tomorrow.</p>
+    <div class="hero-actions">
+      <a class="btn btn-yellow" href="#setup">Make my prompt →</a>
+      <a class="btn btn-ghost" href="#how">How it works</a>
+    </div>
+    <div class="pills">
+      <span class="pill">K2 to P6</span>
+      <span class="pill">English, Maths &amp; Science</span>
+      <span class="pill">Printable PDF pack</span>
+      <span class="pill">Nothing leaves your device</span>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <svg class="sq" style="right:-60px;top:10px;width:220px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F6E08A" transform="rotate(10 100 65)"/></svg>
+  <div class="wrap">
+    <h2 class="section-title">Three steps. <span class="hl">No coding.</span></h2>
+    <p class="section-sub">Works with your ChatGPT or Claude account.</p>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Answer the questions</h3><p>Level, subjects, weak topics, holiday dates and how much time you really have. About 3 minutes.</p></div>
+      <div class="step"><div class="num">2</div><h3>Copy your prompt</h3><p>We turn your answers into one clear prompt. It's built in your browser, so your details are never sent anywhere.</p></div>
+      <div class="step"><div class="num">3</div><h3>Paste, then print</h3><p>Paste it into ChatGPT or Claude. You get the plan first, then a printable pack one week at a time.</p></div>
+    </div>
+    <div class="pack" aria-label="What's in your printable pack">
+      <div class="sheet"><strong>The plan</strong><small>Day-by-day calendar with rest days and trips marked</small><div class="cal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="sheet"><strong>Tick-off tracker</strong><small>Your child colours a box after each session</small><div class="ticks"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="sheet"><strong>Daily worksheets</strong><small>One page per session, matched to that day's topic</small><div class="bar m"></div><div class="bar s"></div><div class="lines"><i></i><i></i><i></i><i></i></div></div>
+      <div class="sheet"><strong>Answer keys</strong><small>At the back, so you or your helper can check in 2 minutes</small><div class="bar"></div><div class="bar m"></div><div class="bar s"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="form-shell" id="setup">
+  <svg class="sq" style="left:-70px;top:30px;width:230px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#BFD9F0" transform="rotate(-15 100 65)"/></svg>
+  <svg class="sq" style="right:-60px;bottom:40px;width:220px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F5CFEA" transform="rotate(15 100 65)"/></svg>
+  <div class="wrap">
+    <span class="eyebrow">Set it up</span>
+    <h2 class="section-title" style="margin-top:14px">Tell us about <span class="hl">your holiday.</span></h2>
+    <p class="section-sub">Takes about 3 minutes. Skip anything that doesn't apply.</p>
+
+    <form id="form" novalidate>
+      <div class="part">
+        <p class="part-label">Part 1 · Your child</p>
+        <div class="card">
+          <div class="grid">
+            <label class="f">Name or nickname<small>Optional</small>
+              <input type="text" id="name" placeholder="e.g. Kai" autocomplete="off"></label>
+            <label class="f">Current level
+              <select id="level">
+                <option value="">Choose…</option>
+                <option>K2</option><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>P5</option><option>P6</option>
+              </select></label>
+            <div class="full"><span class="f-label">Which holiday?</span>
+              <div class="chips" data-single id="holiday">
+                <button type="button" class="chip" data-v="year-end">Year-end (Nov–Dec)</button>
+                <button type="button" class="chip" data-v="March">March</button>
+                <button type="button" class="chip" data-v="June">June</button>
+                <button type="button" class="chip" data-v="September">September</button>
+              </div></div>
+            <div class="full"><span class="f-label">The goal for this holiday</span>
+              <div class="chips" data-single id="goal">
+                <button type="button" class="chip" data-v="keep skills fresh so nothing is forgotten" aria-pressed="true">Don't forget what they learned</button>
+                <button type="button" class="chip" data-v="fix specific weak spots">Fix weak spots</button>
+                <button type="button" class="chip" data-v="get a gentle head start on the next topics">Gentle head start</button>
+                <button type="button" class="chip" data-v="prepare for the next school exams">Exam prep</button>
+                <button type="button" class="chip" data-v="build a daily learning routine without stress">Just a routine</button>
+              </div></div>
+            <div class="full"><span class="f-label">Languages spoken at home<small>Helps the plan support English or Mother Tongue where needed</small></span>
+              <div class="chips" id="homeLang">
+                <button type="button" class="chip" data-v="Bahasa Indonesia">Bahasa Indonesia</button>
+                <button type="button" class="chip" data-v="English">English</button>
+                <button type="button" class="chip" data-v="Mandarin">Mandarin</button>
+                <button type="button" class="chip" data-v="Malay">Malay</button>
+                <button type="button" class="chip" data-v="Tamil">Tamil</button>
+                <button type="button" class="chip" data-v="another language">Other</button>
+              </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="part">
+        <p class="part-label">Part 2 · Subjects</p>
+        <div class="card">
+          <span class="f-label">Which subjects should the plan cover?</span>
+          <div class="chips" id="subjects">
+            <button type="button" class="chip" data-v="English">English</button>
+            <button type="button" class="chip" data-v="Maths">Maths</button>
+            <button type="button" class="chip" data-v="Science" data-from="3" hidden>Science</button>
+            <button type="button" class="chip" data-v="P1 readiness" data-k2 hidden>P1 readiness</button>
+          </div>
+          <p class="hint" id="subjHint">Choose a level first to see the subjects.</p>
+          <div id="subjectDetails"></div>
+
+          <div class="soon">
+            <span class="status">Coming soon</span>
+            <h3>Chinese revision pack 中文</h3>
+            <p>Snap a photo of your child's 听写 list and get practice sheets made only from those words. Want it? Leave your email and we'll tell you when it's ready.</p>
+            <div class="soon-row">
+              <input type="email" id="cnEmail" placeholder="you@email.com" autocomplete="email" aria-label="Your email">
+              <input type="text" id="cnHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+              <button type="button" class="btn btn-yellow" id="cnBtn">I want this</button>
+            </div>
+            <p class="soon-msg" id="cnMsg" role="status"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="part">
+        <p class="part-label">Part 3 · Your holiday</p>
+        <div class="card">
+          <div class="grid">
+            <label class="f">Plan starts<input type="date" id="start"></label>
+            <label class="f">Plan ends<input type="date" id="end"></label>
+            <label class="f full">Days away or no study<small>Trips, balik kampung, Christmas, family visits</small>
+              <input type="text" id="away" placeholder="e.g. Bali 14–21 Dec, nothing on 25 Dec and 1 Jan"></label>
+            <div><span class="f-label">Study time a day</span>
+              <div class="chips" data-single id="mins">
+                <button type="button" class="chip" data-v="20">20 min</button>
+                <button type="button" class="chip" data-v="30" aria-pressed="true">30 min</button>
+                <button type="button" class="chip" data-v="45">45 min</button>
+                <button type="button" class="chip" data-v="60">1 hour</button>
+              </div></div>
+            <div><span class="f-label">Study days a week</span>
+              <div class="chips" data-single id="days">
+                <button type="button" class="chip" data-v="3">3</button>
+                <button type="button" class="chip" data-v="4">4</button>
+                <button type="button" class="chip" data-v="5" aria-pressed="true">5</button>
+                <button type="button" class="chip" data-v="6">6</button>
+              </div></div>
+            <div class="full"><span class="f-label">Who's with them while they study?</span>
+              <div class="chips" data-single id="who">
+                <button type="button" class="chip" data-v="a parent sits with them" aria-pressed="true">Me / a parent</button>
+                <button type="button" class="chip" data-v="our helper supervises but can't teach the content">Our helper</button>
+                <button type="button" class="chip" data-v="a grandparent supervises">Grandparent</button>
+                <button type="button" class="chip" data-v="they mostly work on their own">On their own</button>
+              </div></div>
+            <div class="full"><span class="f-label">What works for your child?</span>
+              <div class="chips" id="style">
+                <button type="button" class="chip" data-v="short worksheets">Worksheets</button>
+                <button type="button" class="chip" data-v="games and hands-on activities">Games &amp; hands-on</button>
+                <button type="button" class="chip" data-v="reading together">Reading together</button>
+                <button type="button" class="chip" data-v="educational videos or apps">Videos &amp; apps</button>
+                <button type="button" class="chip" data-v="assessment books we already own">Books we own</button>
+              </div></div>
+            <label class="f full">Anything else?<small>Optional</small>
+              <textarea id="extra" placeholder="e.g. loses focus after 15 minutes, loves dinosaurs, already does Kumon every day"></textarea></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="part">
+        <p class="part-label">Part 4 · What you get</p>
+        <div class="card">
+          <div class="grid">
+            <label class="check full"><input type="checkbox" id="printables" checked>
+              <span>Make a printable worksheet pack too<small>Plan, tick-off tracker, one worksheet per session and answer keys, as a PDF. One week at a time.</small></span></label>
+            <div class="full"><span class="f-label">Language for your plan and instructions<small>Worksheets are always in English, like school. Pick the language that's easiest for you or your helper.</small></span>
+              <div class="chips" data-single id="out">
+                <button type="button" class="chip" data-v="English" aria-pressed="true">English</button>
+                <button type="button" class="chip" data-v="Bahasa Indonesia">Bahasa Indonesia</button>
+                <button type="button" class="chip" data-v="Bahasa Indonesia (with school terms, subject and topic names in English)">Campur (mixed)</button>
+              </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gen-row">
+        <button class="btn btn-primary" type="submit">Make my prompt →</button>
+        <div class="err" id="err" role="alert"></div>
+        <div class="privacy">🔒 Nothing leaves your browser. This page builds your prompt on your own device.</div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="output">
+  <div class="wrap">
+    <div class="card out-card">
+      <h2 class="section-title" style="font-size:28px">Your prompt is <span class="hl">ready</span> 🎉</h2>
+      <p class="section-sub" style="margin-bottom:0">Copy it, then paste it into ChatGPT or Claude. You can edit the text below first if you like.</p>
+      <div class="out-actions">
+        <button class="btn btn-primary" id="copyBtn" type="button">Copy prompt</button>
+        <button class="btn btn-ghost" id="dlBtn" type="button">Save as .txt</button>
+        <button class="btn btn-ghost" id="editBtn" type="button">← Edit my answers</button>
+      </div>
+      <textarea id="promptOut" aria-label="Your generated prompt"></textarea>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="chatgpt">ChatGPT</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="claude">Claude</button>
+      </div>
+      <div class="tabpanel" id="panel-chatgpt">
+        <ol>
+          <li>Open <a href="https://chatgpt.com" target="_blank" rel="noopener"><strong>chatgpt.com</strong></a> and log in. A standard account works.</li>
+          <li>Start a new chat. If you have your child's school spelling list or a worksheet they found hard, <strong>attach a photo</strong> with the + button.</li>
+          <li>Paste your prompt and press Enter. Answer its questions.</li>
+          <li>Check the plan, then ask for the <em>"week 1 printable pack"</em> and tap the download link it gives you.</li>
+        </ol>
+      </div>
+      <div class="tabpanel" id="panel-claude" hidden>
+        <ol>
+          <li>Open <a href="https://claude.ai" target="_blank" rel="noopener"><strong>claude.ai</strong></a> and log in.</li>
+          <li>Start a new chat. If you have your child's school spelling list or a worksheet they found hard, <strong>attach a photo</strong> with the + button.</li>
+          <li>Paste your prompt and press Enter. Answer its questions.</li>
+          <li>Check the plan, then ask for the <em>"week 1 printable pack"</em>. If it builds a page, open it and choose Print → Save as PDF.</li>
+        </ol>
+      </div>
+      <div class="note">💡 <strong>Too much?</strong> Just reply: "Make it lighter", "Swap Science to Tuesdays", "Easier worksheets". A plan that gets done beats a perfect one dropped by day 4.</div>
+      <div class="note">✏️ <strong>AI makes mistakes.</strong> Glance at each worksheet and answer key before printing, and check topics against your child's school books.</div>
+
+      <div class="follow">
+        <svg class="sq" style="right:-50px;bottom:-40px;width:180px" viewBox="0 0 200 130" aria-hidden="true"><path d="M10 70 C10 10 80 5 75 55 C70 100 15 95 45 45 C75 -5 150 20 140 80 C132 125 70 115 95 70 C120 25 190 45 175 95" stroke="#F6C94C" transform="rotate(10 100 65)"/></svg>
+        <h3>Tell us how it went</h3>
+        <p>Did the plan stick? Did the AI get something wrong? DM us. We share what real SG families found, and it helps us decide which tool to build next.</p>
+        <a class="btn btn-yellow" href="https://www.instagram.com/thelearningmama_sg/" target="_blank" rel="noopener">Follow @thelearningmama_sg</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>The Learning Mama</strong> · Your SG family guide to parenting + education</p>
+    <p>The AI drafts the plan, you know your kids best. AI can make mistakes, so always double-check important details with your school.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied ✓</div>
+
+<script>
+var $ = function(s){ return document.querySelector(s); };
+
+// Chips: multi-select by default, single-select when the group has data-single
+document.querySelectorAll('.chips').forEach(function(g){
+  g.addEventListener('click', function(e){
+    var c = e.target.closest('.chip'); if(!c) return;
+    if (g.hasAttribute('data-single')) {
+      g.querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      c.setAttribute('aria-pressed','true');
+    } else {
+      c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    }
+    if (g.id === 'subjects') renderSubjects();    if (g.id === 'holiday') setDates();
+    $('#err').textContent = '';
+  });
+});
+function picked(id){ return Array.prototype.map.call(document.querySelectorAll('#'+id+' .chip[aria-pressed="true"]'), function(c){ return c.dataset.v; }); }
+function one(id){ return picked(id)[0] || ''; }
+
+// Holiday presets: suggest dates, parent can change them
+function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function setDates(){
+  var h = one('holiday'), now = new Date(), y = now.getFullYear();
+  var map = { 'year-end':[y+'-11-21', y+'-12-31'], 'March':[(y+1)+'-03-14',(y+1)+'-03-22'], 'June':[(y+1)+'-05-30',(y+1)+'-06-28'], 'September':[(y+1)+'-09-05',(y+1)+'-09-13'] };
+  if (map[h]) { $('#start').value = map[h][0]; $('#end').value = map[h][1]; }
+}
+(function initHoliday(){
+  var m = new Date().getMonth();
+  var def = m >= 9 ? 'year-end' : m <= 2 ? 'March' : m <= 5 ? 'June' : 'September';
+  var c = document.querySelector('#holiday .chip[data-v="'+def+'"]'); if (c) c.setAttribute('aria-pressed','true');
+  setDates();
+})();
+
+// Subjects depend on level: Science from P3, "P1 readiness" only for K2
+function syncSubjects(){
+  var lv = $('#level').value, k2 = lv === 'K2', p = /^P(\d)$/.exec(lv), num = p ? +p[1] : 0;
+  document.querySelectorAll('#subjects .chip').forEach(function(c){
+    var show = !lv ? false : c.hasAttribute('data-k2') ? k2 : c.dataset.from ? num >= +c.dataset.from : true;
+    c.hidden = !show;
+    if (!show) c.setAttribute('aria-pressed','false');
+  });
+  $('#subjHint').textContent = !lv ? 'Choose a level first to see the subjects.' : k2 ? 'For K2 we cover English, Maths and getting ready for P1.' : num < 3 ? 'Science starts in P3, so P1 and P2 cover English and Maths.' : '';
+  renderSubjects();
+}
+syncSubjects();
+
+// Per-subject detail blocks
+function renderSubjects(){
+  var box = $('#subjectDetails'), prev = {};
+  box.querySelectorAll('.subj').forEach(function(el){ prev[el.dataset.s] = { lvl: el.querySelector('select').value, topics: el.querySelector('input').value }; });
+  box.innerHTML = '';
+  picked('subjects').forEach(function(s){
+    var d = document.createElement('div'); d.className = 'subj'; d.dataset.s = s;
+    d.innerHTML = '<h3>'+s+'</h3><div class="grid">'+
+      '<label class="f">How is it going?<select><option value="doing well">Doing well</option><option value="okay" selected>Okay</option><option value="struggling">Struggling</option></select></label>'+
+      '<label class="f">Weak topics<small>Optional</small><input type="text" placeholder="'+({English:'e.g. composition, synthesis',Maths:'e.g. fractions, model drawing',Science:'e.g. heat, life cycles','P1 readiness':'e.g. pencil grip, telling time'})[s]+'"></label></div>';
+    if (prev[s]) { d.querySelector('select').value = prev[s].lvl; d.querySelector('input').value = prev[s].topics; }
+    box.appendChild(d);
+  });
+}
+
+function fmt(v){ if(!v) return ''; return new Date(v+'T00:00:00').toLocaleDateString('en-SG',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+
+var NEXT = {K2:'P1',P1:'P2',P2:'P3',P3:'P4',P4:'P5',P5:'P6',P6:'Secondary 1'};
+
+function buildPrompt(){
+  var name = $('#name').value.trim(), level = $('#level').value, hol = one('holiday'), goal = one('goal');
+  var home = picked('homeLang'), mins = one('mins'), days = one('days'), who = one('who'), style = picked('style');
+  var away = $('#away').value.trim(), extra = $('#extra').value.trim(), out = one('out'), pack = $('#printables').checked;
+  var yearEnd = hol === 'year-end', next = NEXT[level];
+  var subs = Array.prototype.map.call(document.querySelectorAll('#subjectDetails .subj'), function(el){
+    var t = el.querySelector('input').value.trim();
+    return '- ' + el.dataset.s + ': ' + el.querySelector('select').value + (t ? '. Weak topics: ' + t : '');
+  });
+  var k2 = level === 'K2';
+  var helper = who.indexOf('helper') > -1 || who.indexOf('grandparent') > -1, alone = who.indexOf('own') > -1;
+  var preview = goal.indexOf('head start') > -1;
+  var n = 1, L = [];
+
+  L.push('You are an experienced Singapore ' + (k2 ? 'preschool and lower primary' : 'primary school') + ' teacher who knows the current MOE syllabus well. Help me plan my child\'s ' + (hol || 'school') + ' holiday revision' + (pack ? ' and make printable worksheets for it.' : '.'));
+  L.push('', 'ABOUT MY CHILD');
+  if (name) L.push('- Name: ' + name);
+  L.push('- Current level: ' + level + '.' + (yearEnd && next ? ' Going into ' + next + ' next year.' : ''));
+  L.push('- Goal for this holiday: ' + goal + '.');
+  if (home.length) L.push('- Languages spoken at home: ' + home.join(', ') + '.');
+  L.push('', 'SUBJECTS'); L = L.concat(subs);
+  L.push('', 'OUR HOLIDAY');
+  L.push('- Plan runs from ' + (fmt($('#start').value) || '[start date]') + ' to ' + (fmt($('#end').value) || '[end date]') + '.');
+  L.push('- Days away or no study: ' + (away || 'none') + '.');
+  L.push('- ' + mins + ' minutes of study a day, ' + days + ' days a week. Never more than this.');
+  L.push('- While studying: ' + who + '. They will read the daily instructions in ' + out.replace(/ \(.*\)$/, '') + '.');
+  if (style.length) L.push('- What works for my child: ' + style.join(', ') + '.');
+  if (extra) L.push('- Also: ' + extra);
+
+  L.push('', 'HOW TO MAKE THE PLAN');
+  L.push((n++) + '. Before you start, ask me up to 3 short questions if anything important is missing, then wait for my answers. If I attach my child\'s school spelling list or a worksheet they found hard, use it.');
+  if (k2) L.push((n++) + '. Follow the MOE Nurturing Early Learners (NEL) framework for K2, and focus on the skills a child needs to start P1 in Singapore: early reading and phonics, writing letters and simple words, numbers to 100, simple adding and taking away, and P1 readiness (pencil grip, telling time, packing a school bag, buying food at the canteen with coins). If you are not sure something fits, say so.');
+  else L.push((n++) + '. Only use topics from the current Singapore MOE primary syllabus for ' + level + (yearEnd ? ' (the whole year)' : ' (topics taught so far this year)') + (preview && next ? (yearEnd ? ', plus a gentle preview of the first topics of ' + next : ', plus a gentle preview of the next topics') : '') + '. If you are not sure a topic is in the syllabus, say so.');
+  L.push((n++) + '. Keep it light. It\'s a holiday: include rest days, keep the first week easier, and give more time to weak topics and struggling subjects.');
+  L.push((n++) + '. Every session must fit inside ' + mins + ' minutes, in small blocks with a short break.');
+  L.push((n++) + '. ' + (helper ? 'The adult in charge can\'t teach the content, so write each day so they can run it: what to do, what to open, and what a good answer looks like.' : alone ? 'Write each day so my child can follow it alone, with a 2-minute check I can do at the end.' : 'Write each day so I can run it with no preparation the night before.'));
+  L.push((n++) + '. Use free or everyday materials where possible. If you suggest a paid book or app, say it\'s optional.');
+  if (home.indexOf('Bahasa Indonesia') > -1 && home.indexOf('English') === -1) L.push((n++) + '. English is not our main home language, so build in fun English reading and speaking practice.');
+
+  L.push('', 'STEP 1: THE PLAN');
+  L.push('- A one-paragraph summary.');
+  L.push('- A week-by-week table: Day | Date | Subject | Activity (step by step) | Time. Mark rest days and days away clearly.');
+  L.push('- Then stop and ask me if the plan looks right before making anything else.');
+
+  if (pack) {
+    L.push('', 'STEP 2: THE PRINTABLE PACK (one week at a time)');
+    L.push('When I say the plan is OK, make the printable pack for week 1 only, as a downloadable A4 PDF. Then ask if I want the next week.');
+    L.push('Each week\'s pack has:');
+    L.push('- Page 1: that week\'s plan as a simple, colourful calendar.');
+    L.push('- Page 2: a tick-off tracker my child colours in after each session.');
+    L.push('- One worksheet page for every study session, matching that day\'s topic and fitting inside ' + mins + ' minutes. Include the child\'s name' + (name ? ' (' + name + ')' : '') + ', the date and a short instruction line at the top.');
+    L.push('- Answer keys at the back' + (helper ? ', written so a non-teacher can mark them' : '') + '.');
+    L.push('Make worksheets friendly and uncluttered: a large clear font, plenty of space to write, ' + (k2 || /^P[1-3]$/.test(level) ? 'big writing lines, simple pictures, and short questions' : 'and a mix of question types like the school uses') + '.');
+    L.push('Write all worksheet questions in English, using Singapore school terms and British spelling (e.g. "colour", "maths").');
+    L.push('Check every answer in the answer key twice before you finish.');
+    L.push('Put the answer keys and helper notes in their own section at the end, so I can print them separately and keep them away from my child.');
+    L.push('If you cannot create a PDF file here, make the pack as one printable web page or document instead (one worksheet per page), and tell me how to print it.');
+  }
+
+  var english = out === 'English';
+  L.push('', english ? 'Write everything in English.' : 'Write the plan, the daily instructions and the notes on the answer keys in ' + out + (pack ? ', but keep the worksheets themselves in English' : '') + '.');
+  return L.join('\n');
+}
+
+var form = $('#form'), output = $('#output'), toast = $('#toast');
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  if (!$('#level').value) { $('#err').textContent = 'Please choose your child\'s level.'; $('#level').focus(); return; }
+  if (!picked('subjects').length) { $('#err').textContent = 'Pick at least one subject.'; $('#subjects').scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  $('#promptOut').value = buildPrompt();
+  output.classList.add('show');
+  output.scrollIntoView({behavior:'smooth'});
+});
+$('#level').addEventListener('change', function(){ $('#err').textContent = ''; syncSubjects(); });
+
+// Chinese pack waitlist: same sign-up endpoint as the home page
+var WAITLIST_ENDPOINT = "https://formspree.io/f/maeowbrk";
+$('#cnBtn').addEventListener('click', function(){
+  var email = $('#cnEmail').value.trim(), msg = $('#cnMsg'), btn = $('#cnBtn');
+  if ($('#cnHp').value) return;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Please enter a valid email address.'; return; }
+  btn.disabled = true; msg.textContent = 'Sending…';
+  fetch(WAITLIST_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify({ email: email, tool: 'Chinese revision pack', source: 'holiday-planner', level: $('#level').value || '' }) })
+  .then(function(r){ if(!r.ok) throw new Error(); msg.textContent = "You're on the list! We'll email you when it's ready."; $('#cnEmail').value = ''; })
+  .catch(function(){ msg.textContent = 'Something went wrong. Please try again.'; })
+  .then(function(){ btn.disabled = false; });
+});
+
+function showToast(t){ toast.textContent = t; toast.classList.add('show'); setTimeout(function(){ toast.classList.remove('show'); }, 2200); }
+$('#copyBtn').addEventListener('click', function(){
+  var t = $('#promptOut');
+  var done = function(){ showToast('Copied ✓ Now paste it into a new chat'); };
+  if (navigator.clipboard) navigator.clipboard.writeText(t.value).then(done, function(){ t.select(); document.execCommand('copy'); done(); });
+  else { t.select(); document.execCommand('copy'); done(); }
+});
+$('#dlBtn').addEventListener('click', function(){
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([$('#promptOut').value], {type:'text/plain'}));
+  a.download = 'holiday-revision-prompt.txt'; a.click(); URL.revokeObjectURL(a.href);
+});
+$('#editBtn').addEventListener('click', function(){ $('#setup').scrollIntoView({behavior:'smooth'}); });
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(function(x){ x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+    $('#panel-chatgpt').hidden = t.dataset.tab !== 'chatgpt';
+    $('#panel-claude').hidden = t.dataset.tab !== 'claude';
+  });
+});
+</script>
+</body>
+</html>
