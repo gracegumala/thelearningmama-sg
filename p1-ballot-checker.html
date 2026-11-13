@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P1 Ballot Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@1,9..144,600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---------------------------------------------------------------
+     The Learning Mama design system.
+     Tokens lifted from thelearningmama.com so this tool reads as part
+     of the site rather than a bolted-on utility.
+     --------------------------------------------------------------- */
+  :root{
+    /* brand palette, verbatim */
+    --cream:#F7F3EC; --bg2:#F0EBE2; --card:#FFFDF9;
+    --brown:#4A2218; --ink:var(--brown); --muted:#7A6A62;
+    --line:#E3DCD0; --grey:#E8E3DB;
+    --green:#1E3B24; --green-l:#3A6B45;
+    --yellow:#F6C94C; --yellow-soft:#FBEBB5;
+    --blue:#3E8FD8; --blue-soft:#C9DFF2;
+    --orange:#EE7F4B; --orange-soft:#FADCC8;
+    --pink:#E79BD9; --pink-soft:#F5CFEA;
+    --radius:22px;
+    --shadow:0 2px 0 rgba(74,34,24,.04),0 10px 28px rgba(74,34,24,.06);
+
+    /* Verdict colours. The brand's orange (2.4:1) and yellow (1.4:1) fail
+       as text on cream, so they stay as fills only and these darker
+       siblings carry the words. All three clear AA. */
+    --in:#3A6B45;       --in-soft:#D9E7DC;
+    --ballot:#9C5410;   --ballot-soft:var(--orange-soft);
+    --none:#96321F;     --none-soft:#F3D6CE;
+    --unknown:var(--muted); --unknown-soft:var(--grey);
+
+    --display:"Poppins","DM Sans",sans-serif;
+    --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --script:"Fraunces",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  /* `display` on a class out-specifies the hidden attribute's own rule. */
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--cream);color:var(--ink);
+    font:400 16px/1.55 var(--body);
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+
+  /* ---- masthead: the site's green bar ---- */
+  header{background:var(--green-l);color:var(--cream)}
+  .masthead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0}
+  .brand{font:700 17px/1 var(--display);color:var(--cream);letter-spacing:-.01em}
+  .brand i{font:600 italic 18px/1 var(--script)}
+  .brand b{font-weight:700;letter-spacing:.04em}
+  .tool-tag{
+    font:700 12px var(--body);background:var(--yellow);color:var(--green);
+    border-radius:99px;padding:4px 12px
+  }
+  .src{margin-left:auto;font-size:13px;color:#CFE0D4}
+
+  /* ---- intro ---- */
+  .intro{padding:34px 0 6px}
+  .eyebrow{
+    display:inline-block;font:700 12px var(--body);letter-spacing:.08em;
+    text-transform:uppercase;color:var(--green);background:var(--yellow-soft);
+    border-radius:99px;padding:5px 14px;margin-bottom:14px
+  }
+  .intro h1{
+    font:700 38px/1.15 var(--display);margin:0 0 10px;
+    letter-spacing:-.02em;text-wrap:balance
+  }
+  .intro h1 span{color:var(--green-l)}
+  .intro p{margin:0;color:var(--muted);max-width:60ch;text-wrap:pretty}
+
+  /* ---- query card ---- */
+  form{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;margin:24px 0 8px;
+    display:grid;grid-template-columns:minmax(150px,1fr) auto auto auto auto;
+    gap:14px;align-items:end
+  }
+  .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+  label{
+    font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);white-space:nowrap
+  }
+  input,select{
+    font:400 15px var(--body);color:var(--ink);background:#fff;
+    border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;
+    transition:border-color .14s ease,box-shadow .14s ease;width:100%
+  }
+  input{font-variant-numeric:tabular-nums;letter-spacing:.08em;font-weight:500}
+  input:focus,select:focus{
+    outline:none;border-color:var(--green-l);box-shadow:0 0 0 3px rgba(58,107,69,.12)
+  }
+  button{
+    font:700 15px var(--body);color:var(--green);background:var(--yellow);
+    border:0;border-radius:99px;padding:13px 28px;cursor:pointer;white-space:nowrap;
+    transition:transform .14s ease,filter .14s ease
+  }
+  button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+  button:active{transform:none}
+  button:disabled{opacity:.5;cursor:default;transform:none}
+
+  /* ---- status + caveat ---- */
+  .status{font-size:14px;color:var(--muted);padding:10px 2px 0}
+  .status.err{color:var(--none)}
+  .caveat{
+    font-size:13.5px;line-height:1.55;color:var(--muted);
+    background:var(--bg2);border-radius:16px;padding:13px 16px;margin:0 0 26px;
+    text-wrap:pretty
+  }
+  .caveat a{color:var(--green-l)}
+
+  /* ---- pick a school by name ---- */
+  .pick{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px 22px;margin:14px 0 0
+  }
+  .pick>label{display:block;margin-bottom:9px;font-size:12px}
+  .pick-row{display:flex;gap:10px;flex-wrap:wrap}
+  .pick-row input{flex:1 1 240px}
+  .pick-row button{
+    background:var(--bg2);color:var(--green);font-weight:700;
+    padding:11px 20px;font-size:14px
+  }
+  .pick-note{margin:9px 0 0;font-size:12.5px;color:var(--muted);text-wrap:pretty}
+
+  /* ---- distance bands ---- */
+  .bands{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px}
+  .band-tile{
+    display:flex;flex-direction:column;align-items:flex-start;gap:1px;
+    background:var(--bg2);border:2px solid transparent;border-radius:16px;
+    padding:14px 16px;cursor:pointer;text-align:left;font:inherit;color:inherit;
+    transition:border-color .14s ease,background .14s ease,opacity .14s ease;
+    opacity:.55
+  }
+  .band-tile.on{background:var(--card);border-color:var(--green-l);opacity:1}
+  .band-tile:hover{opacity:1}
+  .band-name{font:700 13px var(--body);color:var(--green)}
+  .band-n{
+    font:700 32px/1.1 var(--display);color:var(--ink);
+    font-variant-numeric:tabular-nums;margin-top:3px
+  }
+  .band-unit{font-size:12.5px;color:var(--muted);margin-top:-2px}
+  .band-rank{
+    font:700 12px var(--body);color:var(--green-l);margin-top:8px;
+    letter-spacing:.02em
+  }
+  .band-hint{font-size:12px;color:var(--muted);line-height:1.4;margin-top:3px;text-wrap:pretty}
+  .empty{font-size:14px;color:var(--muted);padding:18px 0}
+
+  /* schools the parent chose themselves */
+  .g-pick>h2{color:var(--green);background:var(--blue-soft)}
+  .drop{
+    background:none;color:var(--muted);font:500 12.5px var(--body);
+    padding:0 0 14px;border-radius:0
+  }
+  .drop:hover{color:var(--none);filter:none;transform:none}
+
+  /* ---- summary ---- */
+  .summary{padding:26px 0 18px}
+  .summary h1{
+    font:700 27px/1.2 var(--display);margin:0 0 8px;
+    letter-spacing:-.018em;text-wrap:balance
+  }
+  .summary p{margin:0;font-size:14.5px;color:var(--muted);text-wrap:pretty}
+  .summary b{color:var(--ink);font-weight:700}
+
+  /* ---- result groups ---- */
+  .group{margin:26px 0 0}
+  .group>h2{
+    display:inline-flex;align-items:center;gap:8px;margin:0 0 6px;
+    font:700 13px var(--body);letter-spacing:.05em;text-transform:uppercase;
+    border-radius:99px;padding:6px 14px
+  }
+  .group>h2 b{font-variant-numeric:tabular-nums;font-weight:700}
+  .g-in>h2{color:var(--in);background:var(--in-soft)}
+  .g-ballot>h2{color:var(--ballot);background:var(--ballot-soft)}
+  .g-none>h2{color:var(--none);background:var(--none-soft)}
+  .g-unknown>h2{color:var(--unknown);background:var(--unknown-soft)}
+  .group>p{margin:0 0 12px;font-size:13.5px;color:var(--muted);text-wrap:pretty;max-width:68ch}
+
+  ul{
+    list-style:none;margin:0;padding:0 22px;
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)
+  }
+  li.row+li.row{border-top:1px solid var(--line)}
+  .row-head{
+    display:grid;grid-template-columns:auto 1fr auto auto;gap:16px;align-items:center;
+    padding:16px 0;cursor:pointer;background:none;border:0;width:100%;text-align:left;
+    font:inherit;color:inherit
+  }
+  .row-head:hover .name{color:var(--green-l)}
+  .name{font:700 16px var(--display);letter-spacing:-.01em}
+  .badge{width:38px;height:38px;object-fit:contain;flex:none;border-radius:8px}
+  .badge-ph{
+    width:38px;height:38px;flex:none;border-radius:8px;background:var(--bg2);
+    display:grid;place-items:center;font:700 12px var(--display);color:var(--muted)
+  }
+  .meta{font-size:13px;color:var(--muted);margin-top:3px}
+  .dist{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pill{
+    font:700 13px var(--body);border-radius:99px;padding:5px 13px;white-space:nowrap;
+    font-variant-numeric:tabular-nums
+  }
+  .p-in{color:var(--in);background:var(--in-soft)}
+  .p-ballot{color:var(--ballot);background:var(--ballot-soft)}
+  .p-none{color:var(--none);background:var(--none-soft)}
+  .p-unknown{color:var(--unknown);background:var(--unknown-soft)}
+
+  /* ---- expanded detail ---- */
+  .detail{padding:2px 0 24px;display:none}
+  li.open .detail{display:block}
+  .detail h3{
+    font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin:18px 0 9px
+  }
+  .ladder{display:flex;flex-direction:column;gap:3px}
+  .rung{
+    display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center;
+    font-size:13.5px;padding:9px 14px;background:var(--bg2);border-radius:12px;
+    animation:draw .22s ease-out backwards
+  }
+  .rung.you{background:#fff;box-shadow:0 0 0 1.5px var(--green-l) inset}
+  .rung-band{color:var(--muted)}
+  .rung.you .rung-band{color:var(--ink);font-weight:700}
+  .rung-out{font-weight:500}
+  .r-in{color:var(--in)} .r-ballot{color:var(--ballot)}
+  .r-none{color:var(--none)} .r-unknown{color:var(--unknown)}
+  .youtag{font-size:12px;color:var(--green-l);font-weight:700;margin-left:7px}
+  blockquote{
+    margin:12px 0 0;padding:12px 16px;background:var(--yellow-soft);border-radius:14px;
+    font-size:13.5px;line-height:1.55;color:#5B4418;text-wrap:pretty
+  }
+  .figs{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;margin-top:14px}
+  .figs div{color:var(--muted)}
+  .figs b{display:block;font:700 19px var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+
+  /* chance headline */
+  .chance{display:flex;align-items:baseline;gap:13px;margin:6px 0 3px}
+  .chance-n{font:700 46px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+  .chance-t{font-size:14.5px;font-weight:700}
+  .c-in{color:var(--in)} .c-ballot{color:var(--ballot)} .c-none{color:var(--none)}
+  .chance-basis{font-size:13.5px;color:var(--muted);margin:0 0 5px;text-wrap:pretty}
+  .chance-caveat{font-size:12.5px;color:var(--muted);font-style:italic;margin:0}
+
+  /* school facts */
+  .facts{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:12px 26px;font-size:13.5px;margin-top:6px
+  }
+  .facts dt{color:var(--muted);margin-bottom:2px}
+  .facts dd{margin:0;color:var(--ink)}
+  .facts a{color:var(--green-l)}
+  .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:3px}
+  .tag{
+    font:500 12.5px var(--body);background:var(--bg2);border-radius:99px;
+    padding:5px 13px;color:var(--green)
+  }
+  .trend{font-size:13.5px;color:var(--muted);margin-top:14px;text-wrap:pretty}
+  .trend b{color:var(--ink);font-weight:700}
+
+  @keyframes draw{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  @keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  li.row{animation:rise .2s ease-out backwards}
+
+  footer{
+    margin:60px 0 0;background:var(--bg2);
+    padding:30px 0 52px;font-size:13.5px;line-height:1.62;color:var(--muted)
+  }
+  footer p{margin:0 0 12px;max-width:64ch;text-wrap:pretty}
+  footer a{color:var(--green-l)}
+  footer strong{color:var(--ink);font-weight:700}
+
+  @media (max-width:780px){
+    form{grid-template-columns:1fr 1fr;gap:12px;padding:18px}
+    form .field:first-child{grid-column:1/-1}
+    button{grid-column:1/-1}
+    ul{padding:0 16px}
+    /* Crest down the left, everything else stacked beside it. */
+    .row-head{grid-template-columns:auto minmax(0,1fr);row-gap:7px}
+    .row-head>:nth-child(1){grid-column:1;grid-row:1/4;align-self:start}
+    .row-head>:nth-child(2){grid-column:2;grid-row:1}
+    .row-head>.dist{grid-column:2;grid-row:2}
+    .row-head>.pill{grid-column:2;grid-row:3;justify-self:start}
+    .rung{grid-template-columns:1fr;gap:3px}
+    .intro h1{font-size:29px}
+    .summary h1{font-size:22px}
+    .chance-n{font-size:38px}
+    /* Bands stack into rows so the captions stay readable on a phone. */
+    .bands{grid-template-columns:1fr;gap:9px}
+    .band-tile{
+      display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:0;
+      align-items:baseline;padding:12px 15px
+    }
+    .band-n{grid-column:1;grid-row:1;font-size:26px}
+    .band-name{grid-column:2;grid-row:1}
+    .band-unit{grid-column:1;grid-row:2;justify-self:center}
+    .band-rank{grid-column:2;grid-row:2;margin-top:0}
+    .band-hint{grid-column:2;grid-row:3;margin-top:2px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap masthead">
+    <div class="brand">The <i>Learning</i> <b>MAMA</b></div>
+    <span class="tool-tag">P1 Ballot Checker</span>
+    <div class="src" id="src">loading…</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="intro">
+    <span class="eyebrow">P1 Registration</span>
+    <h1>Find your schools.<br><span>See your real chances.</span></h1>
+    <p>Which schools are near you, how competitive each one really was, and what your
+    chances would have been — from your doorstep, in your phase.</p>
+  </div>
+
+  <!-- novalidate: native validation blocks submit SILENTLY, so the page looks
+       dead on a bad entry. We validate in the handler and say what is wrong. -->
+  <form id="q" autocomplete="off" novalidate>
+    <div class="field">
+      <label for="postal">Home postal code</label>
+      <input id="postal" inputmode="numeric" maxlength="8" placeholder="238801"
+             aria-describedby="status">
+    </div>
+    <div class="field">
+      <label for="cit">Citizenship</label>
+      <select id="cit">
+        <option value="SC">Singapore Citizen</option>
+        <option value="PR">Permanent Resident</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="phase">Your phase</label>
+      <select id="phase">
+        <option value="2C" selected>2C</option>
+        <option value="2A">2A</option>
+        <option value="2B">2B</option>
+        <option value="2CS">2C Supplementary</option>
+      </select>
+    </div>
+    <div class="field" hidden>
+      <label for="year">Year</label>
+      <select id="year"></select>
+    </div>
+    <button type="submit" id="go">Show me</button>
+  </form>
+
+  <div class="pick" id="pick" hidden>
+    <label for="school-search">Looking at a particular school?</label>
+    <div class="pick-row">
+      <input id="school-search" list="school-list" placeholder="Start typing a school name…" autocomplete="off">
+      <datalist id="school-list"></datalist>
+      <button type="button" id="add-school">Add to my list</button>
+    </div>
+    <p class="pick-note">Added schools stay at the top whatever the distance, so you can
+    follow the ones you actually care about.</p>
+  </div>
+
+  <div class="status" id="status"></div>
+  <div id="results"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Where this comes from.</strong> Every figure is the Ministry of Education's own
+    published vacancies and balloting data for the stated year. Nothing here is modelled or
+    predicted, and each verdict shows MOE's own sentence so you can check it yourself.</p>
+    <p><strong>Distance is approximate.</strong> Bands are straight-line distance from your postal
+    code to a school's mapped location. MOE measures from its own reference points, and that
+    measurement is the only one that counts. Confirm yours with
+    <a href="https://www.onemap.gov.sg/" target="_blank" rel="noopener">OneMap School Query</a>
+    before you register.</p>
+    <p><strong>Last year is not this year.</strong> A school whose line fell at 1km last year can
+    clear further out the next, and the reverse. Treat this as the strongest evidence available,
+    not a guarantee.</p>
+  </div>
+</footer>
+<!-- Classic script, not a module: this page uses no imports and no
+     top-level await, and a module script adds failure modes (opaque origin
+     on file://, stricter loading rules) for no benefit. -->
+<script>
+const $ = (s) => document.querySelector(s);
+const statusEl = $('#status'), resultsEl = $('#results');
+
+const BAND_KEY = { SC: ['sc_1km','sc_2km','sc_out'], PR: ['pr_1km','pr_2km','pr_out'] };
+const PHASE_LABEL = { '2A':'Phase 2A', '2B':'Phase 2B', '2C':'Phase 2C', '2CS':'Phase 2C Supplementary' };
+
+let DATA = null;
+
+const say = (msg, isErr = false) => {
+  statusEl.textContent = msg;
+  statusEl.className = 'status' + (isErr ? ' err' : '');
+};
+
+async function load() {
+  const res = await fetch('p1-schools.json');
+  DATA = await res.json();
+  const n = DATA.schools.filter((s) => s.lat).length;
+  $('#src').textContent = `MOE ${DATA.years.join(', ')} data · ${n} schools`;
+
+  // A year picker only earns its place once there is more than one year.
+  const sel = $('#year');
+  sel.innerHTML = DATA.years.map((y) => `<option value="${y}">${y}</option>`).join('');
+  sel.value = DATA.latest_year;
+  sel.closest('.field').hidden = DATA.years.length < 2;
+}
+
+/** Straight-line km between two WGS84 points. */
+function km(a, b) {
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+  const la1 = a.lat * rad, la2 = b.lat * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+const bandIndexFor = (d) => (d < 1 ? 0 : d <= 2 ? 1 : 2);
+const bandName = (i) => ['within 1km', '1–2km', 'outside 2km'][i];
+
+/**
+ * Turn a Singapore postal code into coordinates.
+ *
+ * Several services are tried in order, because no single free one is
+ * dependable from a browser:
+ *
+ *   OneMap    the authoritative Singapore gazetteer. Needs a free account
+ *             token; set ONEMAP_TOKEN below and it is used first.
+ *   Photon    OSM-based, no key, permissive CORS. The workhorse here.
+ *   Nominatim good coverage but rate-limits hard — it returns 403 to an
+ *             address that has made even modest use, which is exactly how
+ *             this page used to fail with no explanation.
+ *
+ * If every service fails the caller falls back to letting the person tap
+ * their home on the map, so the tool is never simply stuck.
+ */
+const ONEMAP_TOKEN = '';   // paste a free OneMap token here to use it first
+
+// Anything outside this is not Singapore and must not be trusted, however
+// confidently a geocoder returns it.
+const SG_BBOX = { minLat: 1.15, maxLat: 1.48, minLon: 103.55, maxLon: 104.12 };
+const inSingapore = (p) =>
+  p && p.lat >= SG_BBOX.minLat && p.lat <= SG_BBOX.maxLat &&
+  p.lon >= SG_BBOX.minLon && p.lon <= SG_BBOX.maxLon;
+
+const GEOCODERS = [
+  {
+    name: 'OneMap',
+    enabled: () => !!ONEMAP_TOKEN,
+    url: (p) => `https://www.onemap.gov.sg/api/common/elasticsearch/search?searchVal=${p}&returnGeom=Y&getAddrDetails=N`,
+    headers: () => ({ Authorization: ONEMAP_TOKEN }),
+    parse: (j) => {
+      const r = j?.results?.[0];
+      return r ? { lat: +r.LATITUDE, lon: +r.LONGITUDE } : null;
+    },
+  },
+  {
+    name: 'Photon',
+    enabled: () => true,
+    // lat/lon bias the search towards Singapore rather than a same-numbered
+    // postcode on the other side of the world.
+    url: (p) => `https://photon.komoot.io/api/?q=${encodeURIComponent(p + ' Singapore')}&limit=1&lat=1.35&lon=103.82`,
+    parse: (j) => {
+      const f = j?.features?.[0];
+      return f ? { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] } : null;
+    },
+  },
+  {
+    name: 'Nominatim',
+    enabled: () => true,
+    url: (p) => `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+      postalcode: p, country: 'Singapore', format: 'jsonv2', limit: '1',
+    })}`,
+    parse: (j) => (j?.length ? { lat: +j[0].lat, lon: +j[0].lon } : null),
+  },
+];
+
+// A service that hangs is worse than one that fails: without this, a stalled
+// request would sit on "Locating your postal code…" forever instead of moving
+// on to the next service and then to the map.
+// 4s: a healthy lookup answers well inside 1s, so this is generous while
+// keeping the worst case (every service hanging) to a bearable wait.
+const GEOCODE_TIMEOUT_MS = 4000;
+
+async function geocodePostal(postal) {
+  const tried = [];
+  for (const g of GEOCODERS) {
+    if (!g.enabled()) continue;
+    const abort = new AbortController();
+    const timer = setTimeout(() => abort.abort(), GEOCODE_TIMEOUT_MS);
+    try {
+      const res = await fetch(g.url(postal), {
+        headers: { Accept: 'application/json', ...(g.headers?.() ?? {}) },
+        signal: abort.signal,
+      });
+      if (!res.ok) { tried.push(`${g.name} ${res.status}`); continue; }
+      const point = g.parse(await res.json());
+      if (!point) { tried.push(`${g.name} no match`); continue; }
+      if (!inSingapore(point)) { tried.push(`${g.name} off-map`); continue; }
+      return { ...point, via: g.name };
+    } catch (err) {
+      // A TypeError here means the request never left the browser — CSP, a
+      // sandbox, or a network rule. That is a different problem from a slow
+      // or failing service, and the person needs to be told which.
+      const kind = err.name === 'AbortError' ? 'timed out'
+        : err instanceof TypeError ? 'blocked'
+        : 'unreachable';
+      tried.push(`${g.name} ${kind}`);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  const e = new Error(tried.join(', ') || 'no geocoder available');
+  e.tried = tried;
+  throw e;
+}
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const pct = (o) => `${Math.round(o * 100)}%`;
+
+/**
+ * The three distance bands, in plain language.
+ *
+ * "within 1km / 1–2km / beyond 2km" is MOE's own vocabulary, but a parent
+ * meeting it for the first time has no idea it describes a QUEUE. These
+ * captions say what each band actually buys you, which is the only reason
+ * the distances matter at all.
+ */
+const BAND_INFO = [
+  { name: 'Within 1km',  rank: 'Considered first',  hint: 'Closest homes get first claim on places.' },
+  { name: '1–2km',       rank: 'Considered next',   hint: 'Only after everyone inside 1km has a place.' },
+  { name: 'Beyond 2km',  rank: 'Considered last',   hint: 'Only if places are still left after both.' },
+];
+
+// What the viewer is currently looking at. Bands 0 and 1 by default: a school
+// 9km away is not a candidate, but it stays one click away.
+const VIEW = { bands: new Set([0, 1]), shortlist: loadShortlist(), rows: [], ctx: null };
+
+function loadShortlist() {
+  try { return new Set(JSON.parse(localStorage.getItem('p1-shortlist') ?? '[]')); }
+  catch { return new Set(); }
+}
+function saveShortlist() {
+  try { localStorage.setItem('p1-shortlist', JSON.stringify([...VIEW.shortlist])); }
+  catch { /* private window, or storage blocked — the list just won't persist */ }
+}
+
+function run(home, cit, phase, year) {
+  const bandKeys = BAND_KEY[cit];
+  const all = [];
+
+  for (const s of DATA.schools) {
+    if (!s.lat) continue;
+    const d = km(home, s);
+    const bi = bandIndexFor(d);
+    const ph = s.by_year[year]?.phases[phase];
+    if (!ph) { all.push({ s, d, bi, verdict: 'unknown', ph: null }); continue; }
+    const band = ph.bands.find((b) => b.key === bandKeys[bi]);
+    all.push({ s, d, bi, ph, verdict: band?.verdict ?? 'unknown', band });
+  }
+
+  all.sort((a, b) => a.d - b.d);
+  VIEW.rows = all;
+  VIEW.ctx = { cit, phase, year, postal: $('#postal').value, home };
+  $('#pick').hidden = false;
+  render();
+}
+
+function render() {
+  const { cit, phase, year, postal } = VIEW.ctx;
+  const all = VIEW.rows;
+
+  const counts = [0, 0, 0];
+  all.forEach((r) => counts[r.bi]++);
+
+  const picked = all.filter((r) => VIEW.shortlist.has(r.s.name));
+  const pickedNames = new Set(picked.map((r) => r.s.name));
+  const rows = all.filter((r) => VIEW.bands.has(r.bi) && !pickedNames.has(r.s.name));
+
+  const who = cit === 'SC' ? 'Singapore Citizen' : 'Permanent Resident';
+
+  // ---- heading + the band strip that replaces the old counting sentence ----
+  const strip = BAND_INFO.map((b, i) => {
+    const n = counts[i];
+    const on = VIEW.bands.has(i);
+    return `<button class="band-tile ${on ? 'on' : ''}" data-band="${i}" type="button"
+        aria-pressed="${on}">
+      <span class="band-name">${b.name}</span>
+      <span class="band-n">${n}</span>
+      <span class="band-unit">${n === 1 ? 'school' : 'schools'}</span>
+      <span class="band-rank">${b.rank}</span>
+      <span class="band-hint">${b.hint}</span>
+    </button>`;
+  }).join('');
+
+  // Say plainly what the distances are measured from — a postcode, or the
+  // school someone picked when the lookup was down.
+  const from = VIEW.ctx.home.label ?? postal;
+  const approx = VIEW.ctx.home.via === 'school';
+
+  const head = `
+    <div class="summary">
+      <h1>Schools near ${esc(from)}</h1>
+      <p>Here is how the queue looked for a <b>${who}</b> in <b>${PHASE_LABEL[phase]}</b>,
+      using what MOE recorded in ${year}. Tap a band to show or hide those schools.${
+        approx ? ` <b>Distances are measured from ${esc(from)}, not your home</b>, so treat
+        them as a rough guide until the postcode lookup is working again.` : ''
+      }</p>
+    </div>
+    <div class="bands">${strip}</div>
+    <p class="caveat"><b>How distance works.</b> P1 places are offered in order of how close
+    you live, so your band decides whether a school ever reaches you at all. Distances here
+    are straight-line estimates — check anything close to a boundary on
+    <a href="https://www.onemap.gov.sg/" target="_blank" rel="noopener">OneMap School Query</a>.</p>`;
+
+  // ---- schools the parent chose themselves ----
+  const shortlistHTML = picked.length
+    ? `<section class="group g-pick">
+         <h2>Schools you're watching <b>${picked.length}</b></h2>
+         <p>Shown whatever the distance, so you can follow the ones you have in mind.</p>
+         <ul>${picked.map((r) => rowHTML(r, true)).join('')}</ul>
+       </section>`
+    : '';
+
+  const groups = [
+    { k:'in', cls:'g-in', title:'A place was available', note:`Every ${who} in your band was admitted in ${PHASE_LABEL[phase]} — no ballot reached you.` },
+    { k:'ballot', cls:'g-ballot', title:'You would have gone to a ballot', note:'The line fell inside your exact band. The odds shown are the real ones MOE recorded, not the school-wide ratio.' },
+    { k:'none', cls:'g-none', title:'Places ran out before your band', note:'Applicants living closer filled the phase first. Your chance was not low — it was nil.' },
+    { k:'no_round', cls:'g-unknown', title:'No registration in this phase', note:"These schools held no round at all — there was nothing to apply for, so this is not a rejection. MOE's reason is shown on each." },
+    { k:'unknown', cls:'g-unknown', title:'Not determinable', note:'MOE published no band commentary for this school and phase.' },
+  ];
+
+  const body = groups.map((g) => {
+    const items = rows.filter((r) => r.verdict === g.k);
+    if (!items.length) return '';
+    return `<section class="group ${g.cls}">
+      <h2>${g.title} <b>${items.length}</b></h2>
+      <p>${g.note}</p>
+      <ul>${items.map((r) => rowHTML(r)).join('')}</ul>
+    </section>`;
+  }).join('');
+
+  const empty = !rows.length && !picked.length
+    ? `<p class="empty">No schools in the bands you have showing. Tap a band above to add it back.</p>`
+    : '';
+
+  resultsEl.innerHTML = head + shortlistHTML + body + empty;
+
+  resultsEl.querySelectorAll('.band-tile').forEach((t) => {
+    t.addEventListener('click', () => {
+      const i = +t.dataset.band;
+      VIEW.bands.has(i) ? VIEW.bands.delete(i) : VIEW.bands.add(i);
+      render();
+    });
+  });
+  resultsEl.querySelectorAll('.row-head').forEach((btn, i) => {
+    btn.parentElement.style.animationDelay = `${Math.min(i * 22, 360)}ms`;
+    btn.addEventListener('click', () => btn.parentElement.classList.toggle('open'));
+  });
+  resultsEl.querySelectorAll('[data-drop]').forEach((b) => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      VIEW.shortlist.delete(b.dataset.drop);
+      saveShortlist();
+      render();
+    });
+  });
+}
+
+const GENDER = { boys: "Boys' school", girls: "Girls' school", coed: 'Co-ed' };
+const initials = (n) => n.replace(/[^A-Za-z ]/g, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+
+function factsHTML(s) {
+  const tags = [
+    GENDER[s.gender],
+    s.funding === 'government-aided' ? 'Government-aided' : 'Government',
+    s.sap ? 'SAP' : null,
+    s.gep ? 'GEP centre' : null,
+    s.autonomous ? 'Autonomous' : null,
+  ].filter(Boolean);
+
+  const row = (label, value) => (value ? `<div><dt>${label}</dt><dd>${value}</dd></div>` : '');
+
+  return `<h3>The school</h3>
+    <div class="tags">${tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+    <dl class="facts" style="margin-top:10px">
+      ${row('Address', s.address ? `${esc(s.address)}<br>Singapore ${esc(s.postal_code ?? '')}` : null)}
+      ${row('Nearest MRT', s.mrt ? esc(s.mrt) : null)}
+      ${row('Buses', s.buses ? esc(s.buses) : null)}
+      ${row('Mother tongues', s.mother_tongues?.length
+        ? s.mother_tongues.map((m) => m[0] + m.slice(1).toLowerCase()).join(', ') : null)}
+      ${row('Website', s.website
+        ? `<a href="${esc(s.website)}" target="_blank" rel="noopener">${esc(s.website.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : null)}
+      ${row('Phone', s.phone ? esc(s.phone) : null)}
+    </dl>`;
+}
+
+function chanceHTML(band, year) {
+  const c = band?.chance;
+  if (!c || c.percent == null) return '';
+  const cls = band.verdict === 'in' ? 'c-in' : band.verdict === 'ballot' ? 'c-ballot' : 'c-none';
+  return `<h3>Your chance · ${year}</h3>
+    <div class="chance">
+      <span class="chance-n ${cls}">${c.percent}%</span>
+      <span class="chance-t ${cls}">${esc(c.label)}</span>
+    </div>
+    <p class="chance-basis">${esc(c.basis)}.</p>
+    <p class="chance-caveat">This is what happened in ${year}, not a prediction for next year.</p>`;
+}
+
+function trendHTML(s) {
+  if (!s.trend) {
+    return `<p class="trend">Only <b>${s.years.join(', ')}</b> on record so far — not enough to show a trend.
+      MOE republishes per-school data once a year, and each new year is captured here as it lands.</p>`;
+  }
+  return `<p class="trend">Across <b>${s.trend.years_held} years</b>: ${esc(s.trend.summary)}${
+    s.trend.settled ? `, with the line falling at <b>${esc(s.trend.lines[0])}</b> every time` : ''
+  }.</p>`;
+}
+
+function rowHTML(r, isPicked = false) {
+  const { s, d, bi, ph, band, verdict } = r;
+  const c = band?.chance;
+  const pill = {
+    in: ['p-in', c?.percent != null ? `${c.percent}% · admitted` : 'Place available'],
+    ballot: ['p-ballot', c?.percent != null ? `${c.percent}% · ballot` : 'Ballot'],
+    none: ['p-none', '0% · no place'],
+    no_round: ['p-unknown', 'No round held'],
+    unknown: ['p-unknown', 'Unknown'],
+  }[verdict];
+
+  const ladder = ph ? ph.bands.map((b, i) => {
+    const mine = b.key === BAND_KEY[$('#cit').value][bi];
+    const cls = { in:'r-in', ballot:'r-ballot', none:'r-none', no_round:'r-unknown', unknown:'r-unknown' }[b.verdict];
+    const txt = b.verdict === 'in' ? 'admitted'
+      : b.verdict === 'ballot' ? `ballot — ${b.seats} ${b.seats === 1 ? 'seat' : 'seats'} for ${b.applicants} applicants (${pct(b.odds)})`
+      : b.verdict === 'no_round' ? 'no round held'
+      : b.verdict === 'none' ? 'places already gone'
+      : 'not published';
+    return `<div class="rung ${mine ? 'you' : ''}" style="animation-delay:${i * 28}ms">
+      <div class="rung-band">${b.label}${mine ? '<span class="youtag">you</span>' : ''}</div>
+      <div class="rung-out ${cls}">${txt}</div>
+    </div>`;
+  }).join('') : '';
+
+  const year = $('#year').value || DATA.latest_year;
+  const crest = s.badge
+    ? `<img class="badge" src="${esc(s.badge_local ?? s.badge)}" alt="" loading="lazy"
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'badge-ph',textContent:'${esc(initials(s.name))}'}))">`
+    : `<div class="badge-ph">${esc(initials(s.name))}</div>`;
+
+  return `<li class="row">
+    <button class="row-head" type="button">
+      ${crest}
+      <div>
+        <div class="name">${esc(s.name)}</div>
+        <div class="meta">${esc(s.planning_area ?? '')} · ${GENDER[s.gender]}${s.sap ? ' · SAP' : ''}${s.gep ? ' · GEP centre' : ''}</div>
+      </div>
+      <div class="dist">${d.toFixed(2)} km · ${bandName(bi)}</div>
+      <div class="pill ${pill[0]}">${pill[1]}</div>
+    </button>
+    ${isPicked ? `<button class="drop" type="button" data-drop="${esc(s.name)}">Remove from my list</button>` : ''}
+    <div class="detail">
+      ${chanceHTML(band, year)}
+      <h3>Where the line fell · ${PHASE_LABEL[$('#phase').value]} ${year}</h3>
+      <div class="ladder">${ladder}</div>
+      ${ph ? `<div class="figs">
+        <div>Vacancies<b>${ph.vacancies}</b></div>
+        <div>Applicants<b>${ph.applicants}</b></div>
+        <div>School-wide ratio<b>${ph.ratio != null ? ph.ratio.toFixed(2) + '×' : '—'}</b></div>
+        ${ph.odds != null ? `<div>Odds in the balloted band<b>${pct(ph.odds)}</b></div>` : ''}
+      </div>
+      <blockquote>MOE: &ldquo;${esc(ph.basis)}&rdquo;</blockquote>` : ''}
+      ${trendHTML(s)}
+      ${factsHTML(s)}
+    </div>
+  </li>`;
+}
+
+$('#q').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  // Be generous about what people paste: "23 88 01", "238801 ", "S238801".
+  const raw = $('#postal').value;
+  const postal = raw.replace(/[^0-9]/g, '');
+  if (!postal) return say('Type your six-digit Singapore postal code above, then press Show me.', true);
+  if (postal.length !== 6) {
+    return say(
+      `A Singapore postal code has six digits — "${raw.trim()}" has ${postal.length}. ` +
+      `It is the last six digits of your address.`, true
+    );
+  }
+  $('#postal').value = postal;
+  $('#go').disabled = true;
+  say('Locating your postal code…');
+  try {
+    const home = await geocodePostal(postal);
+    say('');
+    run(home, $('#cit').value, $('#phase').value, $('#year').value || DATA.latest_year);
+  } catch (err) {
+    showLocatePicker(postal, err);
+  } finally {
+    $('#go').disabled = false;
+  }
+});
+
+/**
+ * When no address service answers, start from a school instead.
+ *
+ * Nobody knows their own latitude, but everybody knows a school near them.
+ * Picking one measures every distance from that school, which is rough and
+ * labelled as such — but it beats a dead end, and it is the only way this page
+ * is usable anywhere outbound requests are blocked.
+ */
+function showLocatePicker(postal, err) {
+  say('');
+
+  // A request that never left the browser is a different problem from a
+  // service that answered badly, and only one of them is worth retrying.
+  const blocked = (err?.tried ?? []).length > 0 &&
+    err.tried.every((t) => / blocked$/.test(t));
+
+  const byArea = {};
+  for (const s of DATA.schools) {
+    if (!s.lat) continue;
+    (byArea[s.planning_area ?? 'Other'] ??= []).push(s);
+  }
+
+  // The first two digits of a Singapore postal code are its sector. Far too
+  // coarse to measure distance with — a median of 0.8km and up to 2km out,
+  // which would put people in the wrong band — but good enough to float the
+  // schools most likely to be near them to the top of a list of 180.
+  const sector = postal.slice(0, 2);
+  const nearby = DATA.schools
+    .filter((s) => s.lat && s.postal_code?.startsWith(sector))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const nearbyNames = new Set(nearby.map((s) => s.name));
+
+  const opt = (s) => `<option value="${esc(s.name)}">${esc(s.name)}</option>`;
+  const options =
+    (nearby.length
+      ? `<optgroup label="Probably near ${esc(postal)}">${nearby.map(opt).join('')}</optgroup>`
+      : '') +
+    Object.keys(byArea).sort().map((area) => {
+      const rest = byArea[area]
+        .filter((s) => !nearbyNames.has(s.name))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      return rest.length ? `<optgroup label="${esc(area)}">${rest.map(opt).join('')}</optgroup>` : '';
+    }).join('');
+
+  resultsEl.innerHTML = `
+    <div class="summary">
+      <h1>We can't turn ${esc(postal)} into a location here</h1>
+      ${blocked
+        ? `<p>This page is running somewhere that blocks requests to outside services, so
+           looking up a postcode isn't possible — retrying won't help. <b>Nothing is wrong
+           with your postcode, and every school figure still works.</b> Pick the school you
+           live nearest to and carry on.</p>`
+        : `<p>The address service isn't answering just now, so we can't place
+           <b>${esc(postal)}</b>. Nothing is wrong with your postcode — try again in a few
+           minutes, or carry on from a school you live near.</p>`}
+    </div>
+    <div class="pick">
+      <label for="near-school">Which school are you nearest to?</label>
+      <div class="pick-row">
+        <select id="near-school"><option value="">Choose a school…</option>${options}</select>
+        <button type="button" id="use-near">Start from there</button>
+      </div>
+      <p class="pick-note">Distances will be measured from that school rather than your
+      doorstep, so treat them as approximate.</p>
+    </div>`;
+
+  $('#use-near').addEventListener('click', () => {
+    const s = DATA.schools.find((x) => x.name === $('#near-school').value);
+    if (!s) return say('Pick a school from the list first.', true);
+    run(
+      { lat: s.lat, lon: s.lon, via: 'school', label: s.name },
+      $('#cit').value, $('#phase').value, $('#year').value || DATA.latest_year
+    );
+  });
+}
+
+// ---- picking schools by name ----
+function addSchoolByName(typed) {
+  const q = typed.trim().toLowerCase();
+  if (!q) return;
+  const match =
+    DATA.schools.find((s) => s.name.toLowerCase() === q) ??
+    DATA.schools.find((s) => s.name.toLowerCase().startsWith(q)) ??
+    DATA.schools.find((s) => s.name.toLowerCase().includes(q));
+  if (!match) return say(`No school matches "${typed}". Try part of the name.`, true);
+  if (!VIEW.ctx) return say('Enter your postal code first, so we can work out your distance.', true);
+  VIEW.shortlist.add(match.name);
+  saveShortlist();
+  $('#school-search').value = '';
+  say('');
+  render();
+}
+
+$('#add-school').addEventListener('click', () => addSchoolByName($('#school-search').value));
+$('#school-search').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); addSchoolByName(e.target.value); }
+});
+
+load()
+  .then(() => {
+    $('#school-list').innerHTML = DATA.schools
+      .map((s) => `<option value="${esc(s.name)}"></option>`)
+      .join('');
+  })
+  .catch(() => say('Could not load the dataset. Run the build scripts first.', true));
+</script>
+</body>
+</html>
